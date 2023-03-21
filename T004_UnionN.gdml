@@ -1,0 +1,375 @@
+<?xml version="1.0" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+	<define/>
+	<materials/>
+	<solids>
+		<box name="ws" x="5" y="5" z="5" lunit="mm"/>
+		<box name="box0" x="1" y="1" z="1" lunit="mm"/>
+		<box name="box1" x="1.6395538972158394" y="1.4910113520213277" z="0.8039297432439345" lunit="mm"/>
+		<union name="su1">
+			<first ref="box0"/>
+			<second ref="box1"/>
+			<position name="su1_translation" x="0.898105741323069" y="0.238231298569954" z="0.494913098346123" unit="mm"/>
+			<rotation name="su1_rotation" x="3.925724183614604" y="6.245074060478900" z="6.168679493648101" unit="rad"/>
+		</union>
+		<box name="box2" x="0.7456511056132125" y="0.7095992194486407" z="1.6792711598921393" lunit="mm"/>
+		<union name="su2">
+			<first ref="su1"/>
+			<second ref="box2"/>
+			<position name="su2_translation" x="0.953987108828679" y="0.842313435491740" z="0.082986345277257" unit="mm"/>
+			<rotation name="su2_rotation" x="3.952140451876537" y="4.548538053609762" z="5.125739015797705" unit="rad"/>
+		</union>
+		<box name="box3" x="0.077060972679734" y="0.3119993295685308" z="1.2175788993391117" lunit="mm"/>
+		<union name="su3">
+			<first ref="su2"/>
+			<second ref="box3"/>
+			<position name="su3_translation" x="0.294829301023840" y="0.287131445452653" z="0.723907879442261" unit="mm"/>
+			<rotation name="su3_rotation" x="3.355372628334120" y="1.342238437924014" z="5.847955999353630" unit="rad"/>
+		</union>
+		<box name="box4" x="0.9646902655175555" y="0.006333053690295909" z="0.6544429727810712" lunit="mm"/>
+		<union name="su4">
+			<first ref="su3"/>
+			<second ref="box4"/>
+			<position name="su4_translation" x="0.738723967787061" y="0.942546171274606" z="0.133878444108368" unit="mm"/>
+			<rotation name="su4_rotation" x="4.013161211818619" y="3.955677544997211" z="3.273454557339683" unit="rad"/>
+		</union>
+		<box name="box5" x="0.6196801490628279" y="0.801603192022982" z="0.7169261604613173" lunit="mm"/>
+		<union name="su5">
+			<first ref="su4"/>
+			<second ref="box5"/>
+			<position name="su5_translation" x="0.899609110068154" y="0.316368659910142" z="0.243438451845218" unit="mm"/>
+			<rotation name="su5_rotation" x="1.574554184326775" y="2.560909514145286" z="2.724575243425604" unit="rad"/>
+		</union>
+		<box name="box6" x="1.5950462873019189" y="1.1590609499415077" z="1.3875453463029879" lunit="mm"/>
+		<union name="su6">
+			<first ref="su5"/>
+			<second ref="box6"/>
+			<position name="su6_translation" x="0.405964656072230" y="0.564592579495227" z="0.921886561981526" unit="mm"/>
+			<rotation name="su6_rotation" x="4.867161006499192" y="5.123299359780549" z="2.697519956629268" unit="rad"/>
+		</union>
+		<box name="box7" x="0.6393008932825297" y="0.5166041921790541" z="0.5708062928281277" lunit="mm"/>
+		<union name="su7">
+			<first ref="su6"/>
+			<second ref="box7"/>
+			<position name="su7_translation" x="0.833712882689755" y="0.419393515681234" z="0.075917094754403" unit="mm"/>
+			<rotation name="su7_rotation" x="4.792682972119492" y="1.544198509559920" z="3.205428068352622" unit="rad"/>
+		</union>
+		<box name="box8" x="0.42502907446881943" y="0.8193287787036407" z="1.2980976865163996" lunit="mm"/>
+		<union name="su8">
+			<first ref="su7"/>
+			<second ref="box8"/>
+			<position name="su8_translation" x="0.638822714181080" y="0.318974337124647" z="0.435509478685435" unit="mm"/>
+			<rotation name="su8_rotation" x="4.536526108556897" y="0.297972176473386" z="2.891503259412208" unit="rad"/>
+		</union>
+		<box name="box9" x="0.6091397904706821" y="0.12211809579279898" z="1.832834350505473" lunit="mm"/>
+		<union name="su9">
+			<first ref="su8"/>
+			<second ref="box9"/>
+			<position name="su9_translation" x="0.999204742263893" y="0.842886049536953" z="0.886801432573747" unit="mm"/>
+			<rotation name="su9_rotation" x="4.014416787703568" y="5.064818588349793" z="5.837894754920526" unit="rad"/>
+		</union>
+		<box name="box10" x="1.7519358927877209" y="0.568170667906581" z="1.9720970734257663" lunit="mm"/>
+		<union name="su10">
+			<first ref="su9"/>
+			<second ref="box10"/>
+			<position name="su10_translation" x="0.722962315110342" y="0.424390648558026" z="0.645967444552032" unit="mm"/>
+			<rotation name="su10_rotation" x="0.874260878792112" y="2.359745301192524" z="4.645959114210520" unit="rad"/>
+		</union>
+		<box name="box11" x="0.5177241562906054" y="1.045521092736899" z="1.628730784541238" lunit="mm"/>
+		<union name="su11">
+			<first ref="su10"/>
+			<second ref="box11"/>
+			<position name="su11_translation" x="0.528258702855913" y="0.158032436216035" z="0.532369658140423" unit="mm"/>
+			<rotation name="su11_rotation" x="5.960073552565137" y="2.661484285545372" z="2.827680116423262" unit="rad"/>
+		</union>
+		<box name="box12" x="1.6303519496282721" y="0.0024634887614509715" z="0.8258991325487857" lunit="mm"/>
+		<union name="su12">
+			<first ref="su11"/>
+			<second ref="box12"/>
+			<position name="su12_translation" x="0.484406773071893" y="0.443381627957979" z="0.838812421846766" unit="mm"/>
+			<rotation name="su12_rotation" x="2.179126750693314" y="6.192048563926299" z="4.756651381485645" unit="rad"/>
+		</union>
+		<box name="box13" x="1.74165052142657" y="1.6498676270368091" z="1.6589332492649076" lunit="mm"/>
+		<union name="su13">
+			<first ref="su12"/>
+			<second ref="box13"/>
+			<position name="su13_translation" x="0.544375388053705" y="0.063091437767534" z="0.284927873947771" unit="mm"/>
+			<rotation name="su13_rotation" x="3.715144963410647" y="4.759918971950839" z="1.049846053502522" unit="rad"/>
+		</union>
+		<box name="box14" x="0.7710399887436141" y="1.9984854449500886" z="0.9557504479283734" lunit="mm"/>
+		<union name="su14">
+			<first ref="su13"/>
+			<second ref="box14"/>
+			<position name="su14_translation" x="0.554699267749573" y="0.959917578323170" z="0.435622991044995" unit="mm"/>
+			<rotation name="su14_rotation" x="3.028993408296887" y="5.439565465073328" z="2.390239814696407" unit="rad"/>
+		</union>
+		<box name="box15" x="1.3599693604049639" y="0.6025970798146596" z="0.507785352835644" lunit="mm"/>
+		<union name="su15">
+			<first ref="su14"/>
+			<second ref="box15"/>
+			<position name="su15_translation" x="0.180874943033595" y="0.677179392552868" z="0.319865534292238" unit="mm"/>
+			<rotation name="su15_rotation" x="4.400377528532399" y="2.137706532493907" z="0.752925603486497" unit="rad"/>
+		</union>
+		<box name="box16" x="1.464883823871356" y="1.4981277032441431" z="1.2564962388433858" lunit="mm"/>
+		<union name="su16">
+			<first ref="su15"/>
+			<second ref="box16"/>
+			<position name="su16_translation" x="0.543228404992211" y="0.325797028717349" z="0.316500875078862" unit="mm"/>
+			<rotation name="su16_rotation" x="3.672628750703567" y="1.434361765967921" z="3.130010361359314" unit="rad"/>
+		</union>
+		<box name="box17" x="1.6560116085628018" y="1.4392734462885617" z="0.7700014542790818" lunit="mm"/>
+		<union name="su17">
+			<first ref="su16"/>
+			<second ref="box17"/>
+			<position name="su17_translation" x="0.176957090571976" y="0.318199509602299" z="0.589828395016229" unit="mm"/>
+			<rotation name="su17_rotation" x="5.437251018097803" y="1.668020987729702" z="0.317741418545836" unit="rad"/>
+		</union>
+		<box name="box18" x="0.30824182052768756" y="0.9303668387930732" z="1.4090859096656079" lunit="mm"/>
+		<union name="su18">
+			<first ref="su17"/>
+			<second ref="box18"/>
+			<position name="su18_translation" x="0.973781903055605" y="0.347264317401372" z="0.340334750269378" unit="mm"/>
+			<rotation name="su18_rotation" x="6.108324496729018" y="4.607242923436412" z="2.826036963940296" unit="rad"/>
+		</union>
+		<box name="box19" x="1.9488656227139987" y="0.7222409083297494" z="1.420538682130926" lunit="mm"/>
+		<union name="su19">
+			<first ref="su18"/>
+			<second ref="box19"/>
+			<position name="su19_translation" x="0.473315882145930" y="0.376830572900924" z="0.919869037958535" unit="mm"/>
+			<rotation name="su19_rotation" x="2.247436056105853" y="1.883133668338617" z="5.016270369703184" unit="rad"/>
+		</union>
+		<box name="box20" x="1.252355836742798" y="0.9241382090363337" z="1.9140241722140738" lunit="mm"/>
+		<union name="su20">
+			<first ref="su19"/>
+			<second ref="box20"/>
+			<position name="su20_translation" x="0.683787935527729" y="0.901799617121910" z="0.410042684311813" unit="mm"/>
+			<rotation name="su20_rotation" x="0.720742639736711" y="1.768945593314002" z="4.699772261994756" unit="rad"/>
+		</union>
+		<box name="box21" x="1.228567554516678" y="0.30385037729344866" z="0.7898840226452739" lunit="mm"/>
+		<union name="su21">
+			<first ref="su20"/>
+			<second ref="box21"/>
+			<position name="su21_translation" x="0.662270782007310" y="0.468739233507907" z="0.934400635644899" unit="mm"/>
+			<rotation name="su21_rotation" x="2.996884269124003" y="5.828726100512624" z="4.791851209488268" unit="rad"/>
+		</union>
+		<box name="box22" x="1.5329912675891275" y="1.6941648792831745" z="0.07501855458463447" lunit="mm"/>
+		<union name="su22">
+			<first ref="su21"/>
+			<second ref="box22"/>
+			<position name="su22_translation" x="0.478670747927743" y="0.013241858876348" z="0.554024093202207" unit="mm"/>
+			<rotation name="su22_rotation" x="4.900183804466074" y="0.209387809443370" z="1.597965530954512" unit="rad"/>
+		</union>
+		<box name="box23" x="1.0167405999719228" y="0.7824479645588363" z="1.299664510353415" lunit="mm"/>
+		<union name="su23">
+			<first ref="su22"/>
+			<second ref="box23"/>
+			<position name="su23_translation" x="0.136341962279234" y="0.009189779919908" z="0.986848357419190" unit="mm"/>
+			<rotation name="su23_rotation" x="1.283358562679731" y="0.470947560296409" z="1.926574957710919" unit="rad"/>
+		</union>
+		<box name="box24" x="1.1731935474131714" y="0.5037461363821378" z="1.1145710653571521" lunit="mm"/>
+		<union name="su24">
+			<first ref="su23"/>
+			<second ref="box24"/>
+			<position name="su24_translation" x="0.562639254792480" y="0.334922130161205" z="0.360829336337814" unit="mm"/>
+			<rotation name="su24_rotation" x="0.268060496955754" y="5.037201525017005" z="2.194216218473588" unit="rad"/>
+		</union>
+		<box name="box25" x="0.5899473444647185" y="0.670317074745562" z="0.5288245553063884" lunit="mm"/>
+		<union name="su25">
+			<first ref="su24"/>
+			<second ref="box25"/>
+			<position name="su25_translation" x="0.813240836223405" y="0.622649896029565" z="0.125934012821937" unit="mm"/>
+			<rotation name="su25_rotation" x="3.050981142330063" y="2.174637943464234" z="2.500059190474176" unit="rad"/>
+		</union>
+		<box name="box26" x="1.1407978680721176" y="0.9229125869887824" z="0.4652316703090378" lunit="mm"/>
+		<union name="su26">
+			<first ref="su25"/>
+			<second ref="box26"/>
+			<position name="su26_translation" x="0.606448247426923" y="0.027222894929040" z="0.729670405276154" unit="mm"/>
+			<rotation name="su26_rotation" x="5.733414955431372" y="0.148410515901931" z="6.184943328088911" unit="rad"/>
+		</union>
+		<box name="box27" x="1.6151169023113556" y="1.4809845496368956" z="0.12992754818122432" lunit="mm"/>
+		<union name="su27">
+			<first ref="su26"/>
+			<second ref="box27"/>
+			<position name="su27_translation" x="0.510891634619757" y="0.218692018779659" z="0.354331870885627" unit="mm"/>
+			<rotation name="su27_rotation" x="1.345433048012351" y="3.934681628008469" z="3.388391631359506" unit="rad"/>
+		</union>
+		<box name="box28" x="0.18247091370768054" y="1.8261116167013363" z="1.6820375879844383" lunit="mm"/>
+		<union name="su28">
+			<first ref="su27"/>
+			<second ref="box28"/>
+			<position name="su28_translation" x="0.965669771207866" y="0.983142256157728" z="0.125253106890006" unit="mm"/>
+			<rotation name="su28_rotation" x="4.529204916353472" y="4.707021513425408" z="0.064416524659043" unit="rad"/>
+		</union>
+		<box name="box29" x="1.9814488330364104" y="1.7274889359456063" z="1.5016475687739352" lunit="mm"/>
+		<union name="su29">
+			<first ref="su28"/>
+			<second ref="box29"/>
+			<position name="su29_translation" x="0.295345756616686" y="0.970099826344072" z="0.670286893897776" unit="mm"/>
+			<rotation name="su29_rotation" x="0.179540604134448" y="4.852074666490062" z="1.748210999149563" unit="rad"/>
+		</union>
+		<box name="box30" x="1.5148849489093763" y="0.815107442680715" z="1.2848649560062988" lunit="mm"/>
+		<union name="su30">
+			<first ref="su29"/>
+			<second ref="box30"/>
+			<position name="su30_translation" x="0.275419648682606" y="0.515524401901297" z="0.774447728800985" unit="mm"/>
+			<rotation name="su30_rotation" x="1.370042195979086" y="5.282305637454477" z="0.968996392593193" unit="rad"/>
+		</union>
+		<box name="box31" x="0.943038230967082" y="1.2286942746250182" z="0.8238720207456145" lunit="mm"/>
+		<union name="su31">
+			<first ref="su30"/>
+			<second ref="box31"/>
+			<position name="su31_translation" x="0.880297320559938" y="0.053655002981415" z="0.976881119839264" unit="mm"/>
+			<rotation name="su31_rotation" x="1.161369128940000" y="3.821623556474137" z="4.792381412978164" unit="rad"/>
+		</union>
+		<box name="box32" x="0.4146201195484147" y="1.6551402387282363" z="0.19185789482416848" lunit="mm"/>
+		<union name="su32">
+			<first ref="su31"/>
+			<second ref="box32"/>
+			<position name="su32_translation" x="0.767170067169750" y="0.213274515230574" z="0.113949133673975" unit="mm"/>
+			<rotation name="su32_rotation" x="5.796157924836132" y="5.230756941398419" z="5.587875279940115" unit="rad"/>
+		</union>
+		<box name="box33" x="0.7287571259740173" y="1.7131748248204712" z="1.9249285123286148" lunit="mm"/>
+		<union name="su33">
+			<first ref="su32"/>
+			<second ref="box33"/>
+			<position name="su33_translation" x="0.904162159367047" y="0.926471972859558" z="0.970935027145573" unit="mm"/>
+			<rotation name="su33_rotation" x="4.149522713283432" y="4.066014165655332" z="1.261082645102423" unit="rad"/>
+		</union>
+		<box name="box34" x="0.6991664162563371" y="0.42652155200864406" z="0.772588083271353" lunit="mm"/>
+		<union name="su34">
+			<first ref="su33"/>
+			<second ref="box34"/>
+			<position name="su34_translation" x="0.086385529204586" y="0.363427770547644" z="0.585092970079081" unit="mm"/>
+			<rotation name="su34_rotation" x="4.790181094556440" y="3.858678710391079" z="3.543782908018087" unit="rad"/>
+		</union>
+		<box name="box35" x="0.565238688632979" y="0.2836189134317495" z="0.06397530641079086" lunit="mm"/>
+		<union name="su35">
+			<first ref="su34"/>
+			<second ref="box35"/>
+			<position name="su35_translation" x="0.302756464961386" y="0.964441653471406" z="0.364546004830801" unit="mm"/>
+			<rotation name="su35_rotation" x="3.486487050127480" y="0.493385304076503" z="2.347485545589112" unit="rad"/>
+		</union>
+		<box name="box36" x="1.9070937188610435" y="1.8844210341645984" z="0.7140169295749912" lunit="mm"/>
+		<union name="su36">
+			<first ref="su35"/>
+			<second ref="box36"/>
+			<position name="su36_translation" x="0.450005690204574" y="0.105990174239399" z="0.012430095921764" unit="mm"/>
+			<rotation name="su36_rotation" x="4.342769507941131" y="3.552853592061256" z="0.898301019270911" unit="rad"/>
+		</union>
+		<box name="box37" x="0.11104951751066516" y="1.8033113294312246" z="1.3681440959324283" lunit="mm"/>
+		<union name="su37">
+			<first ref="su36"/>
+			<second ref="box37"/>
+			<position name="su37_translation" x="0.098052705308536" y="0.161527795493467" z="0.595859664816146" unit="mm"/>
+			<rotation name="su37_rotation" x="0.982206259124250" y="5.565264980764514" z="4.060244338109806" unit="rad"/>
+		</union>
+		<box name="box38" x="0.0967768661619326" y="0.06659699993020518" z="1.4628107911372528" lunit="mm"/>
+		<union name="su38">
+			<first ref="su37"/>
+			<second ref="box38"/>
+			<position name="su38_translation" x="0.130629849764193" y="0.743333945574071" z="0.850280145729927" unit="mm"/>
+			<rotation name="su38_rotation" x="5.194863571840585" y="4.936740339111499" z="5.670757066515078" unit="rad"/>
+		</union>
+		<box name="box39" x="1.7475122810183912" y="1.666515682166761" z="0.8493125606872325" lunit="mm"/>
+		<union name="su39">
+			<first ref="su38"/>
+			<second ref="box39"/>
+			<position name="su39_translation" x="0.808019556495579" y="0.358189064537621" z="0.808272437129319" unit="mm"/>
+			<rotation name="su39_rotation" x="3.491114125128610" y="5.769895775351736" z="4.375710447970320" unit="rad"/>
+		</union>
+		<box name="box40" x="0.18050184284467274" y="0.8937809855403323" z="0.6539512479999134" lunit="mm"/>
+		<union name="su40">
+			<first ref="su39"/>
+			<second ref="box40"/>
+			<position name="su40_translation" x="0.980770256140297" y="0.137664211156517" z="0.774256819549687" unit="mm"/>
+			<rotation name="su40_rotation" x="5.972519507638937" y="3.037737235440492" z="5.884617535083006" unit="rad"/>
+		</union>
+		<box name="box41" x="1.7672431405077305" y="0.9068517346900362" z="0.41616694166460455" lunit="mm"/>
+		<union name="su41">
+			<first ref="su40"/>
+			<second ref="box41"/>
+			<position name="su41_translation" x="0.072290911294069" y="0.404376786003837" z="0.739783664892255" unit="mm"/>
+			<rotation name="su41_rotation" x="5.471397197498673" y="1.102118202189384" z="2.170487765752688" unit="rad"/>
+		</union>
+		<box name="box42" x="1.9970784601120333" y="0.4721979678740582" z="1.9828406484846897" lunit="mm"/>
+		<union name="su42">
+			<first ref="su41"/>
+			<second ref="box42"/>
+			<position name="su42_translation" x="0.291017458978115" y="0.137222101681597" z="0.312326125853195" unit="mm"/>
+			<rotation name="su42_rotation" x="3.729775153377462" y="1.147371218401254" z="0.397155112517773" unit="rad"/>
+		</union>
+		<box name="box43" x="0.5372470304720129" y="1.215534131880182" z="0.7829885516709032" lunit="mm"/>
+		<union name="su43">
+			<first ref="su42"/>
+			<second ref="box43"/>
+			<position name="su43_translation" x="0.711794468498622" y="0.342353922620893" z="0.108476214184642" unit="mm"/>
+			<rotation name="su43_rotation" x="4.742024020750593" y="0.948768311922161" z="4.393358236298737" unit="rad"/>
+		</union>
+		<box name="box44" x="1.3691744533590144" y="1.7471939420770402" z="1.153730451639604" lunit="mm"/>
+		<union name="su44">
+			<first ref="su43"/>
+			<second ref="box44"/>
+			<position name="su44_translation" x="0.253164765489407" y="0.334990894401573" z="0.678049233771747" unit="mm"/>
+			<rotation name="su44_rotation" x="6.229556048634853" y="1.097860802763604" z="5.463747021465619" unit="rad"/>
+		</union>
+		<box name="box45" x="1.5220943851603832" y="0.6143924440874622" z="1.1150905854812347" lunit="mm"/>
+		<union name="su45">
+			<first ref="su44"/>
+			<second ref="box45"/>
+			<position name="su45_translation" x="0.147987338161630" y="0.774468280863779" z="0.059316091729252" unit="mm"/>
+			<rotation name="su45_rotation" x="1.980923878481956" y="1.491905081461875" z="2.746269856270096" unit="rad"/>
+		</union>
+		<box name="box46" x="0.1552137806241498" y="1.386107178967944" z="0.2926782801057479" lunit="mm"/>
+		<union name="su46">
+			<first ref="su45"/>
+			<second ref="box46"/>
+			<position name="su46_translation" x="0.602371955697816" y="0.644448098102475" z="0.549934828267127" unit="mm"/>
+			<rotation name="su46_rotation" x="4.903698671008796" y="2.976011438204804" z="3.240116278022427" unit="rad"/>
+		</union>
+		<box name="box47" x="1.7781612794055397" y="1.0711269820952747" z="1.0962213522219186" lunit="mm"/>
+		<union name="su47">
+			<first ref="su46"/>
+			<second ref="box47"/>
+			<position name="su47_translation" x="0.339111801635071" y="0.438554235119802" z="0.350053885662994" unit="mm"/>
+			<rotation name="su47_rotation" x="0.045182331315391" y="4.175888862332686" z="0.527783484294841" unit="rad"/>
+		</union>
+		<box name="box48" x="0.5520557294074906" y="0.28636590324288025" z="0.5792062192636664" lunit="mm"/>
+		<union name="su48">
+			<first ref="su47"/>
+			<second ref="box48"/>
+			<position name="su48_translation" x="0.029220581546593" y="0.628807168524187" z="0.930681095550515" unit="mm"/>
+			<rotation name="su48_rotation" x="2.023472867232787" y="6.053598761690769" z="4.618140095554703" unit="rad"/>
+		</union>
+		<box name="box49" x="0.8334403172562004" y="1.744499411775409" z="1.6458541833230302" lunit="mm"/>
+		<union name="su49">
+			<first ref="su48"/>
+			<second ref="box49"/>
+			<position name="su49_translation" x="0.343677185843655" y="0.912647797177522" z="0.208576977341797" unit="mm"/>
+			<rotation name="su49_rotation" x="2.556997561681730" y="3.681047935761630" z="0.701552450574814" unit="rad"/>
+		</union>
+		<box name="box50" x="0.7600324030555148" y="1.9665924644367425" z="0.401582247084056" lunit="mm"/>
+		<union name="su50">
+			<first ref="su49"/>
+			<second ref="box50"/>
+			<position name="su50_translation" x="0.900988844263343" y="0.242256997117664" z="0.275206252599773" unit="mm"/>
+			<rotation name="su50_rotation" x="0.670567023788884" y="0.285656484495386" z="6.129558351077475" unit="rad"/>
+		</union>
+	</solids>
+	<structure>
+		<volume name="ul">
+			<materialref ref="G4_Fe"/>
+			<solidref ref="su50"/>
+		</volume>
+		<volume name="wl">
+			<materialref ref="G4_Galactic"/>
+			<solidref ref="ws"/>
+			<physvol name="up" copynumber="1">
+				<volumeref ref="ul"/>
+			</physvol>
+		</volume>
+	</structure>
+	<setup name="Default" version="1.0">
+		<world ref="wl"/>
+	</setup>
+</gdml>
