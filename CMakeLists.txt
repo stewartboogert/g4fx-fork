@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 3.16...3.21)
-project(G01)
+project(geant4fx)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available Vis drivers by default
@@ -23,6 +23,7 @@ include(${Geant4_USE_FILE})
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 find_package(CGAL 5 REQUIRED)
+find_package(assimp REQUIRED)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -36,7 +37,11 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(load_gdml load_gdml.cc ${sources} ${headers})
-target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL)
+target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL assimp::assimp)
+
+add_executable(tess_test tess_test.cc ${sources} ${headers})
+target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL assimp::assimp)
+
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
