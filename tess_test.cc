@@ -69,6 +69,58 @@ int main(int argc,char **argv)
     G4TessellatedSolid *tess_solid = new G4TessellatedSolid();
 
     G4MeshLoader *mesh_load = new G4MeshLoader();
-    mesh_load->Load("Wuson.stl");
-    mesh_load->Fill(G4String("NoName"),0,tess_solid);
+    mesh_load->Load("teapot.stl");
+    mesh_load->Fill(0, tess_solid);
+
+    tess_solid->SetSolidClosed(true);
+
+    auto extent = tess_solid->GetExtent();
+
+    auto mX = extent.GetXmin();
+    auto mY = extent.GetYmin();
+    auto mZ = extent.GetZmin();
+
+    auto dX = extent.GetXmax() - extent.GetXmin();
+    auto dY = extent.GetYmax() - extent.GetYmin();
+    auto dZ = extent.GetZmax() - extent.GetZmin();
+
+    dX *= 2;
+    dY *= 2;
+    dZ *= 2;
+
+    // Get starting timepoint
+    auto start = std::chrono::high_resolution_clock::now();
+
+    auto nTest = 10000;
+    for(int i=0;i<nTest;i++) {
+        auto rX = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        auto rY = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        auto rZ = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+        auto dX = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        auto dY = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        auto dZ = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+        auto dNorm = sqrt(pow(dX,2) + pow(dY,2) + pow(dZ,2));
+        dX /= dNorm;
+        dY /= dNorm;
+        dZ /= dNorm;
+
+        auto x = rX * dX + mX;
+        auto y = rY * dY + mY;
+        auto z = rZ * dZ + mZ;
+        tess_solid->DistanceToIn(G4ThreeVector(x,y,z));
+        tess_solid->DistanceToOut(G4ThreeVector(x,y,z));
+        tess_solid->DistanceToIn(G4ThreeVector(x,y,z), G4ThreeVector(dX,dY,dZ));
+        tess_solid->Inside(G4ThreeVector(x,y,z));
+        tess_solid->SafetyFromInside(G4ThreeVector(x,y,z),true);
+        tess_solid->SafetyFromOutside(G4ThreeVector(x,y,z),true);
+    }
+
+    // Get starting timepoint
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    G4cout << "duration " << static_cast <float> (duration.count())/nTest << G4endl;
+
 }

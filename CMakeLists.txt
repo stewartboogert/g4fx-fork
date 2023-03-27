@@ -23,7 +23,7 @@ include(${Geant4_USE_FILE})
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 find_package(CGAL 5 REQUIRED)
-find_package(assimp REQUIRED)
+find_package(VTK REQUIRED)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -37,10 +37,10 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(load_gdml load_gdml.cc ${sources} ${headers})
-target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL assimp::assimp)
+target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
 add_executable(tess_test tess_test.cc ${sources} ${headers})
-target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL assimp::assimp)
+ target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
 
 #----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL assimp::assimp)
 # relies on these scripts being in the current working directory.
 #
 set(GDML_FILES
-    T001_Union.gdml T002_Subtraction.gdml T003_Intersection.gdml T004_UnionN.gdml T005_solids.gdml vis.mac
+    T001_Union.gdml T002_Subtraction.gdml T003_Intersection.gdml T004_UnionN.gdml T005_solids.gdml vis.mac teapot.obj teapot.stl
   )
 
 foreach(_script ${GDML_FILES})

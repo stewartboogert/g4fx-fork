@@ -10,9 +10,9 @@
 
 class G4VSurfaceMesh;
 class G4TessellatedSolid;
-class aiScene;
-class aiNode;
-class aiMesh;
+
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
 
 #include <vector>
 #include <map>
@@ -23,17 +23,12 @@ public:
   ~G4MeshLoader() = default;
 
   void Load(G4String file_name);
-  void Fill(G4String nodeName, G4int meshIndex, G4VSurfaceMesh *mesh);
-  void Fill(G4String nodeName, G4int meshIndex, G4TessellatedSolid *tess);
+  void Fill(G4int meshId, G4TessellatedSolid *tess);
+
 protected:
 
 private:
-  void ProcessScene();
-  void ProcessNode(aiNode* node, const aiScene* scene);
-
-  const aiScene* scene;
-  std::map<G4String, std::vector<const aiMesh*>> meshMap;
-
+  vtkSmartPointer<vtkPolyData> pd;
 };
 
 #endif //G4MESHLOADER_HH
