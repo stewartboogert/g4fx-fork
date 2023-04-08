@@ -15,6 +15,7 @@ class G4TessellatedNew;
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkPoints.h"
+#include "vtkUnstructuredGrid.h"
 
 #include <vector>
 #include <map>
@@ -29,6 +30,11 @@ public:
 
   void Fill(G4int meshId, G4TessellatedSolid *tess);
   void Fill(G4int meshId, G4TessellatedNew *tess);
+
+  vtkSmartPointer<vtkPolyData> GetPolyData() {return pd;}
+  void SetPolyData(vtkSmartPointer<vtkPolyData> pdIn) {pd = pdIn;}
+
+  vtkSmartPointer<vtkUnstructuredGrid> GetVolumeMesh();
 
 protected:
 

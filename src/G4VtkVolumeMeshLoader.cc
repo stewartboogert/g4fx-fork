@@ -39,6 +39,11 @@ void G4VtkVolumeMeshLoader::Load(G4String file_name) {
     }
 }
 
+void  G4VtkVolumeMeshLoader::SetUnstructuredGrid(vtkSmartPointer<vtkUnstructuredGrid> ugIn) {
+    ug = ugIn;
+}
+
+
 void G4VtkVolumeMeshLoader::View() {
 
     // Renderer
@@ -70,6 +75,7 @@ void G4VtkVolumeMeshLoader::View() {
 
     vtkNew<vtkPlane> clipPlane;
     clipPlane->SetOrigin(ug->GetCenter());
+    clipPlane->SetOrigin(0,0,-1000);
     clipPlane->SetNormal(0,0,1);
 
     vtkNew<vtk3DLinearGridCrinkleExtractor> clipper;
@@ -105,7 +111,7 @@ void G4VtkVolumeMeshLoader::View() {
     actor2->GetProperty()->SetRepresentationToSurface();
 
     // add to renderer
-    renderer->AddActor(actor);
+    //renderer->AddActor(actor);
     renderer->AddActor(actor2);
 
     // render

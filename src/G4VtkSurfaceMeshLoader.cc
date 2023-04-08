@@ -19,8 +19,11 @@
 #include "vtkPLYReader.h"
 #include "vtkXMLPolyDataReader.h"
 #include "vtkTriangle.h"
+#include "vtkDelaunay3D.h"
 
-G4VtkSurfaceMeshLoader::G4VtkSurfaceMeshLoader() {}
+G4VtkSurfaceMeshLoader::G4VtkSurfaceMeshLoader() {
+    pd = vtkSmartPointer<vtkPolyData>::New();
+}
 
 void G4VtkSurfaceMeshLoader::Load(G4String file_name) {
 
@@ -107,4 +110,12 @@ void G4VtkSurfaceMeshLoader::Fill(G4int meshId, G4TessellatedNew *tess) {
                                                       G4FacetVertexType::ABSOLUTE);
         tess->AddFacet(tf);
     }
+}
+
+vtkSmartPointer<vtkUnstructuredGrid> G4VtkSurfaceMeshLoader::GetVolumeMesh() {
+    vtkNew<vtkDelaunay3D> delaunay;
+    delaunay->SetInputData(pd);
+    delaunay->SetAlpha(0);
+    delaunay->Update();
+    return delaunay->GetOutput();
 }

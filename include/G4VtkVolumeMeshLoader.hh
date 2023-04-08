@@ -20,6 +20,9 @@ public:
 
     void Load(G4String file_name);
 
+    vtkSmartPointer<vtkUnstructuredGrid> GetUnstructuredGrid() {return ug;}
+    void SetUnstructuredGrid(vtkSmartPointer<vtkUnstructuredGrid> ugIn);
+
     void View();
 
 protected:
