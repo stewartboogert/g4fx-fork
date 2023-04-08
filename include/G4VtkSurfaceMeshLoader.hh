@@ -2,14 +2,15 @@
 // Created by Stewart Boogert on 24/03/2023.
 //
 
-#ifndef G4MESHLOADER_HH
-#define G4MESHLOADER_HH
+#ifndef G4VTKSURFACEMESHLOADER_HH
+#define G4VTKSURFACEMESHLOADER_HH
 
 #include "G4Types.hh"
 #include "G4String.hh"
 
 class G4VSurfaceMesh;
 class G4TessellatedSolid;
+class G4TessellatedNew;
 
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
@@ -17,13 +18,14 @@ class G4TessellatedSolid;
 #include <vector>
 #include <map>
 
-class G4MeshLoader {
+class G4VtkSurfaceMeshLoader {
 public:
-  G4MeshLoader();
-  ~G4MeshLoader() = default;
+  G4VtkSurfaceMeshLoader();
+  ~G4VtkSurfaceMeshLoader() = default;
 
   void Load(G4String file_name);
   void Fill(G4int meshId, G4TessellatedSolid *tess);
+  void Fill(G4int meshId, G4TessellatedNew *tess);
 
 protected:
 
@@ -31,4 +33,4 @@ private:
   vtkSmartPointer<vtkPolyData> pd;
 };
 
-#endif //G4MESHLOADER_HH
+#endif //G4VTKSURFACEMESHLOADER_HH

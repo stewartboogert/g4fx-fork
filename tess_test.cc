@@ -60,17 +60,21 @@
 #include "G4BooleanSolid.hh"
 
 #include "G4TessellatedSolid.hh"
-#include "G4MeshLoader.hh"
+#include "G4TessellatedNew.hh"
+#include "G4VtkSurfaceMeshLoader.hh"
 // --------------------------------------------------------------
 
 int main(int argc,char **argv)
 {
 
     G4TessellatedSolid *tess_solid = new G4TessellatedSolid();
+    G4TessellatedNew   *tess_solid2 = new G4TessellatedNew();
 
-    G4MeshLoader *mesh_load = new G4MeshLoader();
+
+    G4VtkSurfaceMeshLoader *mesh_load = new G4VtkSurfaceMeshLoader();
     mesh_load->Load("teapot.stl");
     mesh_load->Fill(0, tess_solid);
+    mesh_load->Fill(0, tess_solid2);
 
     tess_solid->SetSolidClosed(true);
 
