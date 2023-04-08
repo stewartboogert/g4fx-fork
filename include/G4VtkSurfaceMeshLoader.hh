@@ -14,6 +14,7 @@ class G4TessellatedNew;
 
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
+#include "vtkPoints.h"
 
 #include <vector>
 #include <map>
@@ -24,6 +25,8 @@ public:
   ~G4VtkSurfaceMeshLoader() = default;
 
   void Load(G4String file_name);
+  void LoadOFF(G4String file_name);
+
   void Fill(G4int meshId, G4TessellatedSolid *tess);
   void Fill(G4int meshId, G4TessellatedNew *tess);
 
@@ -31,6 +34,7 @@ protected:
 
 private:
   vtkSmartPointer<vtkPolyData> pd;
+  vtkSmartPointer<vtkPoints> points;
 };
 
 #endif //G4VTKSURFACEMESHLOADER_HH

@@ -18,6 +18,7 @@
 #include "vtkOBJReader.h"
 #include "vtkPLYReader.h"
 #include "vtkXMLPolyDataReader.h"
+#include "vtkTriangle.h"
 
 G4VtkSurfaceMeshLoader::G4VtkSurfaceMeshLoader() {}
 
@@ -49,6 +50,32 @@ void G4VtkSurfaceMeshLoader::Load(G4String file_name) {
     }
     else {
         G4cout << "Unknown file type" << G4endl;
+    }
+}
+
+void G4VtkSurfaceMeshLoader::LoadOFF(G4String file_name) {
+    std::ifstream ifstr(file_name);
+
+    G4String dummy;
+    G4int nVertex, nFace, nEdge;
+    G4double x,y,z;
+    G4int nFaceVert, v1, v2, v3;
+
+    ifstr >> dummy >> nVertex >> nFace >> nEdge;
+
+    for(G4int iVert=0; iVert < nVertex; iVert++) {
+        ifstr >> x >> y >> z;
+        points->InsertNextPoint(x,y,z);
+    }
+
+    for(G4int iFace=0; iFace < nFace; iFace++) {
+        ifstr >> nFaceVert >> v1 >> v2 >> v3;
+        vtkNew<vtkTriangle> tri;
+        tri->GetPointIds()->SetId(0, v1);
+        tri->GetPointIds()->SetId(1,v2);
+        tri->GetPointIds()->SetId(2,v3);
+
+        pd->InsertNextCell(tri->GetCellType(), tri->GetPointIds());
     }
 }
 
