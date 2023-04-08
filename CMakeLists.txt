@@ -42,6 +42,8 @@ target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 add_executable(tess_test tess_test.cc ${sources} ${headers})
  target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
+add_executable(vol_mesh_test vol_mesh_test.cc ${sources} ${headers})
+target_link_libraries(vol_mesh_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -49,8 +51,8 @@ add_executable(tess_test tess_test.cc ${sources} ${headers})
 # relies on these scripts being in the current working directory.
 #
 set(GDML_FILES
-    T001_Union.gdml T002_Subtraction.gdml T003_Intersection.gdml T004_UnionN.gdml T005_solids.gdml vis.mac teapot.obj teapot.stl
-  )
+    T001_Union.gdml T002_Subtraction.gdml T003_Intersection.gdml T004_UnionN.gdml T005_solids.gdml T006_torus.geo T006_torus.mesh
+    T006_torus.off T006_torus.stl T006_torus.vtk T007_teapot.obj T007_teapot.stl vis.mac)
 
 foreach(_script ${GDML_FILES})
   configure_file(
