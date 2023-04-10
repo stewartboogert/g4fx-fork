@@ -25,6 +25,9 @@
 #include "vtkRenderWindowInteractor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProperty.h"
+#include "vtkMeshQuality.h"
+#include "vtkIndent.h"
+
 
 G4VtkSurfaceMeshLoader::G4VtkSurfaceMeshLoader() {
     pd = vtkSmartPointer<vtkPolyData>::New();
@@ -157,4 +160,9 @@ void G4VtkSurfaceMeshLoader::View() {
 
     // start interaction
     interactor->Start();
+}
+
+void G4VtkSurfaceMeshLoader::MeshQuality() {
+    vtkNew<vtkMeshQuality> quality;
+    quality->SetInputData(pd);
 }

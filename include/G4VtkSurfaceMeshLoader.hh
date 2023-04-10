@@ -37,6 +37,7 @@ public:
   vtkSmartPointer<vtkUnstructuredGrid> GetVolumeMesh();
 
   void View();
+  void MeshQuality();
 
 protected:
 

@@ -24,6 +24,7 @@ public:
     void SetUnstructuredGrid(vtkSmartPointer<vtkUnstructuredGrid> ugIn);
 
     void View();
+    void MeshQuality();
 
 protected:
 

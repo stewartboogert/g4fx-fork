@@ -20,6 +20,7 @@
 #include "vtkPlane.h"
 #include "vtkClipDataSet.h"
 #include "vtk3DLinearGridCrinkleExtractor.h"
+#include "vtkMeshQuality.h"
 
 G4VtkVolumeMeshLoader::G4VtkVolumeMeshLoader() {
     points = vtkSmartPointer<vtkPoints>::New();
@@ -121,4 +122,7 @@ void G4VtkVolumeMeshLoader::View() {
     interactor->Start();
 }
 
-
+void G4VtkVolumeMeshLoader::MeshQuality() {
+    vtkNew<vtkMeshQuality> quality;
+    quality->SetInputData(ug);
+}
