@@ -16,17 +16,30 @@ int main(int argc,char **argv)
     G4ThreeVector d(-1,-1 ,-1);
     d = d.unit();
 
-    auto dist = s_sdf->DistanceToIn(p,d);
+    auto distIn = 1e99;
+    auto distOut = 1e99;
+
     auto inside = s_sdf->Inside(p);
-    G4cout << "sphere sdf " << dist << " " << inside << G4endl;
+    if(inside)
+        distOut = s_sdf->DistanceToOut(p,d);
+    else
+        distIn  = s_sdf->DistanceToIn(p,d);
+    G4cout << "sphere sdf " << distIn << " " << distOut << " " << inside << G4endl;
 
     G4Orb *s_g4 = new G4Orb("orb",10);
-    dist = s_g4->DistanceToIn(p,d);
     inside = s_g4->Inside(p);
-    G4cout << "orb " << dist << " " << inside << G4endl;
+    if(inside)
+        distOut = s_g4->DistanceToOut(p,d);
+    else
+        distIn = s_g4->DistanceToIn(p,d);
+
+    G4cout << "orb " << distIn << " " << distOut << " " << inside << G4endl;
 
     G4Sphere *ss = new G4Sphere("sphere",0,10,0,2*M_PI,0,M_PI);
-    dist = ss->DistanceToIn(p,d);
     inside = ss->Inside(p);
-    G4cout << "sphere " << dist << " " << inside << G4endl;
+    if(inside)
+        distOut = ss->DistanceToOut(p,d);
+    else
+        distIn = ss->DistanceToIn(p,d);
+    G4cout << "sphere " << distIn << " " << distOut << " " << inside << G4endl;
 }
