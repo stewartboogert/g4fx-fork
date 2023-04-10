@@ -26,6 +26,10 @@ int main(int argc,char **argv)
         distIn  = s_sdf->DistanceToIn(p,d);
     G4cout << "sphere sdf " << distIn << " " << distOut << " " << inside << G4endl;
 
+    G4VtkSignedDistanceField *vtk_sdf = new G4VtkSignedDistanceField(s_sdf);
+    vtk_sdf->CubeMarch();
+
+
     G4Orb *s_g4 = new G4Orb("orb",10);
     inside = s_g4->Inside(p);
     if(inside)

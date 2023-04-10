@@ -45,9 +45,11 @@ add_executable(tess_test tess_test.cc ${sources} ${headers})
 add_executable(vol_mesh_test vol_mesh_test.cc ${sources} ${headers})
 target_link_libraries(vol_mesh_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
-add_executable(ray_march ray_march.cc ${sources} ${headers})
-target_link_libraries(ray_march ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
+add_executable(raymarch_test raymarch_test.cc ${sources} ${headers})
+target_link_libraries(raymarch_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
+add_executable(dicom_test dicom_test.cc ${sources} ${headers})
+target_link_libraries(dicom_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
