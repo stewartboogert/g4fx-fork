@@ -20,6 +20,11 @@
 #include "vtkXMLPolyDataReader.h"
 #include "vtkTriangle.h"
 #include "vtkDelaunay3D.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindowInteractor.h"
+#include "vtkPolyDataMapper.h"
+#include "vtkProperty.h"
 
 G4VtkSurfaceMeshLoader::G4VtkSurfaceMeshLoader() {
     pd = vtkSmartPointer<vtkPolyData>::New();
@@ -118,4 +123,38 @@ vtkSmartPointer<vtkUnstructuredGrid> G4VtkSurfaceMeshLoader::GetVolumeMesh() {
     delaunay->SetAlpha(0);
     delaunay->Update();
     return delaunay->GetOutput();
+}
+
+void G4VtkSurfaceMeshLoader::View() {
+
+    // Renderer
+    vtkNew<vtkRenderer> renderer;
+
+    // Render window
+    vtkNew<vtkRenderWindow> renderWindow;
+    renderWindow->AddRenderer(renderer);
+    renderWindow->SetSize(640, 480);
+
+    // Render window interactor
+    vtkNew<vtkRenderWindowInteractor> interactor;
+    interactor->SetRenderWindow(renderWindow);
+
+    // Mapper
+    vtkNew<vtkPolyDataMapper> mapper;
+    mapper->SetInputData(pd);
+
+    // create actor
+    auto actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(mapper);
+    actor->SetVisibility(1);
+    actor->GetProperty()->SetRepresentationToSurface();
+
+    // add to renderer
+    renderer->AddActor(actor);
+
+    // render
+    renderWindow->Render();
+
+    // start interaction
+    interactor->Start();
 }
