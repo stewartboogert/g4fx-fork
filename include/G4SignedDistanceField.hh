@@ -9,6 +9,7 @@
 #ifndef G4SIGNEDDISTANCEFIELD_HH
 #define G4SIGNEDDISTANCEFIELD_HH
 
+#include "G4TwoVector.hh"
 #include "G4ThreeVector.hh"
 #include "G4VSolid.hh"
 
@@ -16,6 +17,29 @@ class G4VoxelLimits;
 class G4AffineTransform;
 
 #include "vtkImplicitFunction.h"
+
+namespace shader {
+    G4TwoVector vec2(G4double x, G4double y);
+    G4ThreeVector vec3(G4double x, G4double y , G4double z);
+    G4double length(G4TwoVector &v);
+    G4double length(G4ThreeVector &v);
+    G4TwoVector abs(G4TwoVector &v);
+    G4ThreeVector abs(G4ThreeVector &v);
+    G4ThreeVector max(G4TwoVector &v1, G4TwoVector &v2);
+    G4ThreeVector max(G4ThreeVector &v1, G4ThreeVector &v2);
+    G4ThreeVector max(G4TwoVector &v1, G4double d2);
+    G4ThreeVector max(G4ThreeVector &v1, G4double &d2);
+    G4ThreeVector min(G4TwoVector &v1, G4TwoVector &v2);
+    G4ThreeVector min(G4ThreeVector &v1, G4ThreeVector &v2);
+    G4ThreeVector min(G4TwoVector &v1, G4double d2);
+    G4ThreeVector min(G4ThreeVector &v1, G4double &d2);
+    G4double clamp(G4double x, G4double min, G4double max);
+    G4TwoVector clamp(G4TwoVector &v, G4TwoVector min, G4TwoVector max);
+    G4ThreeVector clamp(G4ThreeVector v, G4ThreeVector min, G4ThreeVector max);
+    G4TwoVector clamp(G4TwoVector &v, G4double min, G4double max);
+    G4ThreeVector clamp(G4ThreeVector v, G4double min, G4double max);
+};
+
 
 class G4SignedDistanceField : public G4VSolid {
 public:
