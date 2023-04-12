@@ -10,40 +10,39 @@
 
 int main(int argc,char **argv)
 {
-    G4SphereSDF *s_sdf = new G4SphereSDF(10);
+    G4SphereSDF *s_sdf = new G4SphereSDF("sdf",10);
+    G4Orb       *o_g4 = new G4Orb("orb",10);
+    G4Sphere    *s_g4 = new G4Sphere("sphere",0,10,0,2*M_PI,0,M_PI);
 
-    G4ThreeVector p(100,100,100);
-    G4ThreeVector d(-1,-1 ,-1);
+    G4ThreeVector p(-10+1,0,0);
+    G4ThreeVector d(1,0 ,0);
+
     d = d.unit();
 
     auto distIn = 1e99;
     auto distOut = 1e99;
 
-    auto inside = s_sdf->Inside(p);
-    if(inside)
-        distOut = s_sdf->DistanceToOut(p,d);
-    else
-        distIn  = s_sdf->DistanceToIn(p,d);
-    G4cout << "sphere sdf " << distIn << " " << distOut << " " << inside << G4endl;
+    auto sdf_inside = s_sdf->Inside(p);
+    auto o_inside   = o_g4->Inside(p);
+    auto s_inside   = s_g4->Inside(p);
 
-    G4VtkSignedDistanceField *vtk_sdf = new G4VtkSignedDistanceField(s_sdf);
-    vtk_sdf->CubeMarch();
+    auto sdf_distOutDir = s_sdf->DistanceToOut(p,d);
+    auto sdf_distOut    = s_sdf->DistanceToOut(p);
+    auto sdf_distInDir  = s_sdf->DistanceToIn(p,d);
+    auto sdf_distIn     = s_sdf->DistanceToIn(p);
 
+    auto o_distOutDir = o_g4->DistanceToOut(p,d);
+    auto o_distOut    = o_g4->DistanceToOut(p);
+    auto o_distInDir  = o_g4->DistanceToIn(p,d);
+    auto o_distIn     = o_g4->DistanceToIn(p);
 
-    G4Orb *s_g4 = new G4Orb("orb",10);
-    inside = s_g4->Inside(p);
-    if(inside)
-        distOut = s_g4->DistanceToOut(p,d);
-    else
-        distIn = s_g4->DistanceToIn(p,d);
+    auto s_distOutDir = s_g4->DistanceToOut(p,d);
+    auto s_distOut    = s_g4->DistanceToOut(p);
+    auto s_distInDir  = s_g4->DistanceToIn(p,d);
+    auto s_distIn     = s_g4->DistanceToIn(p);
 
-    G4cout << "orb " << distIn << " " << distOut << " " << inside << G4endl;
+    G4cout << sdf_inside << " " << sdf_distOutDir << " " << sdf_distOut << " " << sdf_distInDir << " " << sdf_distIn << G4endl;
+    G4cout << o_inside << " " << o_distOutDir << " " << o_distOut << " " << o_distInDir << " " << o_distIn << G4endl;
+    G4cout << s_inside << " " << s_distOutDir << " " << s_distOut << " " << s_distInDir << " " << s_distIn << G4endl;
 
-    G4Sphere *ss = new G4Sphere("sphere",0,10,0,2*M_PI,0,M_PI);
-    inside = ss->Inside(p);
-    if(inside)
-        distOut = ss->DistanceToOut(p,d);
-    else
-        distIn = ss->DistanceToIn(p,d);
-    G4cout << "sphere " << distIn << " " << distOut << " " << inside << G4endl;
 }
