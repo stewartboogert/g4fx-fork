@@ -12,32 +12,38 @@
 #include "G4TwoVector.hh"
 #include "G4ThreeVector.hh"
 #include "G4VSolid.hh"
+#include "G4RotationMatrix.hh"
+#include "G4Transform3D.hh"
+#include "G4AffineTransform.hh"
 
 class G4VoxelLimits;
 class G4AffineTransform;
 
+#include "vtkSmartPointer.h"
 #include "vtkImplicitFunction.h"
+class vtkPolyData;
+
 
 namespace shader {
     G4TwoVector vec2(G4double x, G4double y);
     G4ThreeVector vec3(G4double x, G4double y , G4double z);
-    G4double length(G4TwoVector &v);
-    G4double length(G4ThreeVector &v);
-    G4TwoVector abs(G4TwoVector &v);
-    G4ThreeVector abs(G4ThreeVector &v);
-    G4ThreeVector max(G4TwoVector &v1, G4TwoVector &v2);
-    G4ThreeVector max(G4ThreeVector &v1, G4ThreeVector &v2);
-    G4ThreeVector max(G4TwoVector &v1, G4double d2);
-    G4ThreeVector max(G4ThreeVector &v1, G4double &d2);
-    G4ThreeVector min(G4TwoVector &v1, G4TwoVector &v2);
-    G4ThreeVector min(G4ThreeVector &v1, G4ThreeVector &v2);
-    G4ThreeVector min(G4TwoVector &v1, G4double d2);
-    G4ThreeVector min(G4ThreeVector &v1, G4double &d2);
+    G4double length(const G4TwoVector &v);
+    G4double length(const G4ThreeVector &v);
+    G4TwoVector abs(const G4TwoVector &v);
+    G4ThreeVector abs(const G4ThreeVector &v);
+    G4ThreeVector max(const G4TwoVector &v1, const G4TwoVector &v2);
+    G4ThreeVector max(const G4ThreeVector &v1, const G4ThreeVector &v2);
+    G4ThreeVector max(const G4TwoVector &v1, G4double d2);
+    G4ThreeVector max(const G4ThreeVector &v1, G4double d2);
+    G4ThreeVector min(const G4TwoVector &v1, const G4TwoVector &v2);
+    G4ThreeVector min(const G4ThreeVector &v1, const G4ThreeVector &v2);
+    G4ThreeVector min(const G4TwoVector &v1, G4double d2);
+    G4ThreeVector min(const G4ThreeVector &v1, G4double &d2);
     G4double clamp(G4double x, G4double min, G4double max);
-    G4TwoVector clamp(G4TwoVector &v, G4TwoVector min, G4TwoVector max);
-    G4ThreeVector clamp(G4ThreeVector v, G4ThreeVector min, G4ThreeVector max);
-    G4TwoVector clamp(G4TwoVector &v, G4double min, G4double max);
-    G4ThreeVector clamp(G4ThreeVector v, G4double min, G4double max);
+    G4TwoVector clamp(const G4TwoVector &v, const G4TwoVector min, const G4TwoVector max);
+    G4ThreeVector clamp(const G4ThreeVector v, const G4ThreeVector min, const G4ThreeVector max);
+    G4TwoVector clamp(const G4TwoVector &v,  G4double min,  G4double max);
+    G4ThreeVector clamp(const G4ThreeVector v, G4double min, G4double max);
 };
 
 
@@ -65,7 +71,7 @@ public:
     virtual G4double DistanceToOut(const G4ThreeVector &p) const;
     virtual G4GeometryType GetEntityType() const {return G4String("G4SignedDistanceField");}
     virtual std::ostream& StreamInfo(std::ostream& os) const {return os;}
-    virtual void DescribeYourselfTo (G4VGraphicsScene& scene) const {}
+    virtual void DescribeYourselfTo (G4VGraphicsScene& scene) const override;
 
 protected:
 
@@ -74,7 +80,7 @@ private:
 
 class G4VtkSignedDistanceField : public vtkImplicitFunction {
 public:
-    G4VtkSignedDistanceField(G4SignedDistanceField *sdf) : fSdf(sdf) {}
+    G4VtkSignedDistanceField(const G4SignedDistanceField *sdf) : fSdf(sdf) {}
     virtual double EvaluateFunction(double x[3]) {
         return fSdf->Evaluate(G4ThreeVector(x[0],x[1],x[2]));
     }
@@ -86,18 +92,18 @@ public:
         return;
     }
 
-    void CubeMarch();
+    vtkSmartPointer<vtkPolyData> CubeMarch();
 
 protected:
 
 private:
-    G4SignedDistanceField *fSdf;
+    const G4SignedDistanceField *fSdf;
 };
 
 class G4SphereSDF : public G4SignedDistanceField {
 public:
-    G4SphereSDF() {fRadius = 1.0;}
-    G4SphereSDF(G4double radius) {fRadius = radius;}
+    G4SphereSDF() : G4SignedDistanceField() {fRadius = 1.0;}
+    G4SphereSDF(G4String name, G4double radius) : G4SignedDistanceField(name) {fRadius = radius;}
 
     void SetRadius(G4double radius) {fRadius = radius;}
     const G4double GetRadius() {return fRadius;}
@@ -114,13 +120,13 @@ private:
 
 class G4BoxSDF : public G4SignedDistanceField {
 public:
-    G4BoxSDF() {
+    G4BoxSDF() : G4SignedDistanceField("dummy") {
         fX = 1.0;
         fY = 1.0;
         fZ = 1.0;
         fSize = G4ThreeVector(fX,fY,fZ);
     }
-    G4BoxSDF(G4double dHalfX, G4double dHalfY, G4double dHalfZ) {
+    G4BoxSDF(G4String name, G4double dHalfX, G4double dHalfY, G4double dHalfZ) : G4SignedDistanceField(name) {
         fX = 2.0*dHalfX;
         fY = 2.0*dHalfY;
         fZ = 2.0*dHalfZ;
@@ -131,12 +137,17 @@ public:
     G4ThreeVector GetSize() const {return fSize;}
 
     virtual double Evaluate(const G4ThreeVector &p ) const override {
-        return p.mag();
+        using namespace shader;
+        using namespace std;
+
+        auto q = abs(p) - fSize;
+        auto sdf = length(max(q,0.0)) + min(max(q.x(),max(q.y(),q.z())),0.0);
+        return sdf;
     }
 
     virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
-        bmin.set(-fX/2., -fY/2., -fZ/2.);
-        bmax.set(fX/2,    fY/2,   fZ/2.);
+        bmin.set(-fX, -fY, -fZ);
+        bmax.set( fX,  fY,  fZ);
     }
 
     virtual G4GeometryType GetEntityType() const override {return G4String("G4BoxSDF");}
@@ -146,7 +157,50 @@ private:
     G4double fY;
     G4double fZ;
     G4ThreeVector fSize;
+    G4double delta;
 };
 
+class G4DisplacedSDF : public G4SignedDistanceField {
+public:
+    G4DisplacedSDF(const G4String &name,
+                     const G4RotationMatrix &rotation,
+                     const G4ThreeVector &translation,
+                     G4SignedDistanceField *sdf) :
+                     G4SignedDistanceField(name),
+                     fSdf(sdf) {
+        fTransformation = new G4AffineTransform(rotation,translation);
+    }
+
+    G4DisplacedSDF(const G4String &name,
+                   const G4Transform3D &transform,
+                   G4SignedDistanceField *sdf) :
+            G4SignedDistanceField(name),
+            fSdf(sdf) {
+        fTransformation = new G4AffineTransform(transform.getRotation().inverse(),
+                                                transform.getTranslation());
+    }
+
+    G4DisplacedSDF(const G4String &name,
+                   const G4AffineTransform &transform,
+                   G4SignedDistanceField *sdf) :
+            G4SignedDistanceField(name),
+            fSdf(sdf) {
+        fTransformation = new G4AffineTransform(transform);
+    }
+
+    virtual double Evaluate(const G4ThreeVector &) const {
+        return 0;
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const {
+        bmin.set(0, 0, 0);
+        bmax.set(0, 0, 0);
+
+    }
+
+private:
+    G4AffineTransform *fTransformation;
+    G4SignedDistanceField *fSdf;
+};
 
 #endif //G4SIGNEDDISTANCEFIELD_HH
