@@ -1,4 +1,7 @@
 //
+// Created by Stewart Boogert on 11/04/2023.
+//
+//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -22,64 +25,63 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-/// \file persistency/gdml/G01/src/G01PrimaryGeneratorAction.cc
-/// \brief Implementation of the G01PrimaryGeneratorAction class
-//
-//
-//
-//
+
+#include <vector>
+
+#include "G4Types.hh"
+
+#include "G4RunManagerFactory.hh"
+
+#include "G4UImanager.hh"
+
+#include "G4LogicalVolumeStore.hh"
+#include "G4TransportationManager.hh"
 
 #include "G01PrimaryGeneratorAction.hh"
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4SystemOfUnits.hh"
+#include "SDFDetectorConstruction.hh"
+#include "G01ActionInitialization.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "FTFP_BERT.hh"
+#include "QBBC.hh"
 
-G01PrimaryGeneratorAction::G01PrimaryGeneratorAction()
- : G4VUserPrimaryGeneratorAction(),
-   fParticleGun(0)
+#include "G4VisExecutive.hh"
+#include "G4UIExecutive.hh"
+
+#include "G4BooleanProcessorCGAL.hh"
+#include "G4BooleanSolid.hh"
+
+// --------------------------------------------------------------
+
+int main(int argc,char **argv)
 {
-  G4int n_particle = 1;
-  fParticleGun = new G4ParticleGun(n_particle);
+    G4BooleanSolid::SetExternalBooleanProcessor(new G4BooleanProcessorCGAL());
 
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4String particleName;
-  fParticleGun->SetParticleDefinition(
-               particleTable->FindParticle(particleName="e-"));
-  fParticleGun->SetParticleEnergy(20*GeV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0*m, 0, 0));
-  fParticleGun->SetParticleMomentumDirection(G4ParticleMomentum(0,0,1));
 
-}
+    auto* runManager = G4RunManagerFactory::CreateRunManager();
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    runManager->SetUserInitialization(new SDFDetectorConstruction);
+    runManager->SetUserInitialization(new FTFP_BERT);
+    runManager->SetUserInitialization(new G01ActionInitialization());
 
-G01PrimaryGeneratorAction::~G01PrimaryGeneratorAction()
-{
-  delete fParticleGun;
-}
+    runManager->Initialize();
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    // Initialize visualization
+    G4VisManager* visManager = new G4VisExecutive;
+    visManager->Initialize();
 
-void G01PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
-  G4int i = anEvent->GetEventID() % 3;
-  G4ThreeVector v(1.0,0.0,0.0);
-  switch(i)
-  {
-    case 0:
-      break;
-    case 1:
-      v.setY(0.1);
-      break;
-    case 2:
-      v.setZ(0.1);
-      break;
-  }
-  fParticleGun->SetParticleMomentumDirection(v);
-  fParticleGun->GeneratePrimaryVertex(anEvent);
+    // Get the pointer to the User Interface manager
+    G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
+    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+    UImanager->ApplyCommand("/control/execute vis.mac");
+    ui->SessionStart();
+    delete ui;
+
+    // runManager->BeamOn(0);
+
+
+    delete visManager;
+    delete runManager;
+
+    return 0;
 }
