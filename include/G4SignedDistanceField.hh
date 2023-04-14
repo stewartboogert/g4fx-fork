@@ -59,20 +59,20 @@ public:
     virtual double Evaluate(const G4ThreeVector &) const = 0;
     G4ThreeVector EvaluateGradient(const G4ThreeVector &, double epsilon=1e-5) const;
     G4ThreeVector RayMarch(const G4ThreeVector &p, const G4ThreeVector &d) const;
-    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const = 0;
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override= 0;
 
     virtual G4bool CalculateExtent(const EAxis pAxis, const G4VoxelLimits& pVoxelLimit,
-                                   const G4AffineTransform& pTransform, G4double& pMin, G4double& pMax) const;
-    virtual EInside Inside(const G4ThreeVector& p) const;
-    virtual G4ThreeVector SurfaceNormal(const G4ThreeVector& p) const;
-    virtual G4double DistanceToIn(const G4ThreeVector &p, const G4ThreeVector &d) const;
-    virtual G4double DistanceToIn(const G4ThreeVector &p) const;
+                                   const G4AffineTransform& pTransform, G4double& pMin, G4double& pMax) const override;
+    virtual EInside Inside(const G4ThreeVector& p) const override;
+    virtual G4ThreeVector SurfaceNormal(const G4ThreeVector& p) const override;
+    virtual G4double DistanceToIn(const G4ThreeVector &p, const G4ThreeVector &d) const override ;
+    virtual G4double DistanceToIn(const G4ThreeVector &p) const override;
     virtual G4double DistanceToOut(const G4ThreeVector &p, const G4ThreeVector &d,
                                    const G4bool calcNorm=false, G4bool* validNorm = nullptr,
-                                   G4ThreeVector* n = nullptr) const;
-    virtual G4double DistanceToOut(const G4ThreeVector &p) const;
-    virtual G4GeometryType GetEntityType() const {return G4String("G4SignedDistanceField");}
-    virtual std::ostream& StreamInfo(std::ostream& os) const {return os;}
+                                   G4ThreeVector* n = nullptr) const override;
+    virtual G4double DistanceToOut(const G4ThreeVector &p) const override;
+    virtual G4GeometryType GetEntityType() const override {return G4String("G4SignedDistanceField");}
+    virtual std::ostream& StreamInfo(std::ostream& os) const override {return os;}
     virtual void DescribeYourselfTo (G4VGraphicsScene& scene) const override;
 
 protected:
@@ -190,11 +190,11 @@ public:
         fTransformation = new G4AffineTransform(transform);
     }
 
-    virtual double Evaluate(const G4ThreeVector &) const {
+    virtual double Evaluate(const G4ThreeVector &) const override {
         return 0;
     }
 
-    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const {
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
         bmin.set(0, 0, 0);
         bmax.set(0, 0, 0);
 
