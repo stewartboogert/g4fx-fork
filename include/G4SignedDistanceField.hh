@@ -162,6 +162,134 @@ private:
     G4double delta;
 };
 
+class G4BoxRoundSDF : public G4SignedDistanceField {
+public:
+    G4BoxRoundSDF() : G4SignedDistanceField("dummy") {
+        fX = 1.0;
+        fY = 1.0;
+        fZ = 1.0;
+        fSize = G4ThreeVector(fX,fY,fZ);
+    }
+    G4BoxRoundSDF(G4String name,
+                  G4double dHalfX, G4double dHalfY, G4double dHalfZ,
+                  G4double r) : G4SignedDistanceField(name) {
+        fX = 2.0*dHalfX;
+        fY = 2.0*dHalfY;
+        fZ = 2.0*dHalfZ;
+        fSize = G4ThreeVector(fX,fY,fZ);
+        fR = r;
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p ) const override {
+        using namespace shader;
+        using namespace std;
+
+        auto q = abs(p) - fSize;
+        return length(max(q,0.0)) + min(max(q.x(),max(q.y(),q.z())),0.0) - fR;
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        bmin.set(-fX, -fY, -fZ);
+        bmax.set( fX,  fY,  fZ);
+    }
+
+    virtual G4GeometryType GetEntityType() const override {return G4String("G4BoxRoundSDF");}
+
+private:
+    G4double fX;
+    G4double fY;
+    G4double fZ;
+    G4ThreeVector fSize;
+    G4double fR;
+};
+
+class G4BoxFrameSDF : public G4SignedDistanceField {
+public:
+    G4BoxFrameSDF() : G4SignedDistanceField("dummy") {
+        fX = 1.0;
+        fY = 1.0;
+        fZ = 1.0;
+        fSize = G4ThreeVector(fX,fY,fZ);
+    }
+    G4BoxFrameSDF(G4String name,
+                  G4double dHalfX, G4double dHalfY, G4double dHalfZ,
+                  G4double e) : G4SignedDistanceField(name) {
+        fX = 2.0*dHalfX;
+        fY = 2.0*dHalfY;
+        fZ = 2.0*dHalfZ;
+        fSize = G4ThreeVector(fX,fY,fZ);
+        fE = e;
+    }
+
+    void SetSize(const G4ThreeVector size) {fSize = size;}
+    G4ThreeVector GetSize() const {return fSize;}
+
+    virtual double Evaluate(const G4ThreeVector &p ) const override {
+        using namespace shader;
+        using namespace std;
+
+        auto p1= abs(p)-fSize;
+        auto q = abs(p1+vec3(fE))-vec3(fE);
+
+        auto d = min(min(length(max(vec3(p1.x(),q.y(),q.z()),0.0))+min(max(p1.x(),max(q.y(),q.z())),0.0),
+                         length(max(vec3(q.x(),p1.y(),q.z()),0.0))+min(max(q.x(),max(p1.y(),q.z())),0.0)),
+                     length(max(vec3(q.x(),q.y(),p1.z()),0.0))+min(max(q.x(),max(q.y(),p1.z())),0.0));
+        return d;
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        bmin.set(-fX, -fY, -fZ);
+        bmax.set( fX,  fY,  fZ);
+    }
+
+    virtual G4GeometryType GetEntityType() const override {return G4String("G4BoxFrameSDF");}
+
+private:
+    G4double fX;
+    G4double fY;
+    G4double fZ;
+    G4ThreeVector fSize;
+    G4double fE;
+};
+
+class G4TorusSDF : public G4SignedDistanceField {
+public:
+    G4TorusSDF() : G4SignedDistanceField("dummy") {
+    }
+    G4TorusSDF(G4String name,
+                  G4double dHalfX, G4double dHalfY, G4double dHalfZ,
+                  G4double e) : G4SignedDistanceField(name) {
+        fX = 2.0*dHalfX;
+        fY = 2.0*dHalfY;
+        fZ = 2.0*dHalfZ;
+        fSize = G4ThreeVector(fX,fY,fZ);
+        fE = e;
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p ) const override {
+        using namespace shader;
+        using namespace std;
+
+        return 0;
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        bmin.set(-fX, -fY, -fZ);
+        bmax.set( fX,  fY,  fZ);
+    }
+
+    virtual G4GeometryType GetEntityType() const override {return G4String("G4TorusSDF");}
+
+private:
+    G4double fX;
+    G4double fY;
+    G4double fZ;
+    G4ThreeVector fSize;
+    G4double fE;
+};
+
+
+
 class G4DisplacedSDF : public G4SignedDistanceField {
 public:
     G4DisplacedSDF(const G4String &name,
