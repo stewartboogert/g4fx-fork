@@ -26,7 +26,9 @@ class vtkPolyData;
 
 namespace shader {
     G4TwoVector vec2(G4double x, G4double y);
+    G4TwoVector vec2(G4double v);
     G4ThreeVector vec3(G4double x, G4double y , G4double z);
+    G4ThreeVector vec3(G4double v);
     G4double length(const G4TwoVector &v);
     G4double length(const G4ThreeVector &v);
     G4TwoVector abs(const G4TwoVector &v);

@@ -15,8 +15,12 @@
 
 G4TwoVector shader::vec2(G4double x, G4double y)
     {return G4TwoVector(x,y);}
+G4TwoVector shader::vec2(G4double v)
+    {return G4TwoVector(v,v);}
 G4ThreeVector shader::vec3(G4double x, G4double y , G4double z)
     {return G4ThreeVector(x,y,z);}
+G4ThreeVector shader::vec3(G4double v)
+    {return G4ThreeVector(v,v,v);}
 G4double shader::length(const G4TwoVector &v)
     {return v.mag();}
 G4double shader::length(const G4ThreeVector &v)

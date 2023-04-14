@@ -50,17 +50,18 @@ public:
                                            0,
                                            false);
 
-        //auto solidSdf = new G4SphereSDF("test",1*m);
+        // auto solidSdf = new G4SphereSDF("test",1*m);
         // auto solidSdf = new G4Orb("test",1*m);
-        auto solidSdf = new G4BoxSDF("test",1*m,0.5*m,0.25*m);
-
+        // auto solidSdf = new G4BoxSDF("test",1*m,0.5*m,0.25*m);
+        auto solidSdf = new G4BoxRoundSDF("test",3*m, 3*m,3*m, 0.5*m);
+        //auto solidSdf = new G4BoxFrameSDF("test",0.5*m, 0.3*m,0.5*m,0.1*m);
 
         auto logicSdf = new G4LogicalVolume(solidSdf,
                                             sdf_mat,
                                             "sdf");
 
         auto physSdf = new G4PVPlacement(nullptr,  // no rotation
-                                         G4ThreeVector(),
+                                         G4ThreeVector(0,0,0.85*m),
                                          logicSdf,
                                          "sdfPhys",
                                          logicWorld,
