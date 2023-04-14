@@ -188,7 +188,7 @@ vtkSmartPointer<vtkPolyData> G4VtkSignedDistanceField::CubeMarch() {
     auto resolution = 0.1;
     vtkNew<vtkSampleFunction> sampled;
     sampled->SetSampleDimensions(resolution, resolution, resolution);
-    sampled->SetSampleDimensions(50,50,50);
+    sampled->SetSampleDimensions(100,100,100);
     G4ThreeVector bmin;
     G4ThreeVector bmax;
     fSdf->BoundingLimits(bmin, bmax);
