@@ -56,8 +56,8 @@
 
 #include "G4GDMLParser.hh"
 
-#include "G4BooleanProcessorCGAL.hh"
-#include "G4BooleanSolid.hh"
+//#include "G4BooleanProcessorCGAL.hh"
+//#include "G4BooleanSolid.hh"
 
 #include "G4TessellatedSolid.hh"
 #include "G4TessellatedNew.hh"

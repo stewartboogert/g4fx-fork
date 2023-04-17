@@ -47,14 +47,14 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
-#include "G4BooleanProcessorCGAL.hh"
-#include "G4BooleanSolid.hh"
+//#include "G4BooleanProcessorCGAL.hh"
+//#include "G4BooleanSolid.hh"
 
 // --------------------------------------------------------------
 
 int main(int argc,char **argv)
 {
-    G4BooleanSolid::SetExternalBooleanProcessor(new G4BooleanProcessorCGAL());
+    //G4BooleanSolid::SetExternalBooleanProcessor(new G4BooleanProcessorCGAL());
 
 
     auto* runManager = G4RunManagerFactory::CreateRunManager();
