@@ -73,7 +73,11 @@ G4ThreeVector shader::clamp(const G4ThreeVector v, G4double min, G4double max)
     {return G4ThreeVector(v.x() < min ? min : v.x() > max ? max : v.x(),
                          v.y() < min ? min : v.y() > max ? max : v.y(),
                          v.z() < min ? min : v.z() > max ? max : v.z());}
-
+G4TwoVector shader::xy(const G4ThreeVector &v) {return G4TwoVector(v.x(),v.y());}
+G4TwoVector shader::xz(const G4ThreeVector &v) {return G4TwoVector(v.x(),v.z());}
+G4TwoVector shader::yz(const G4ThreeVector &v) {return G4TwoVector(v.y(),v.z());}
+G4double shader::dot(const G4TwoVector &v1, const G4TwoVector &v2) {return v1.dot(v2);}
+G4double shader::dot(const G4ThreeVector &v1, const G4ThreeVector &v2) {return v1.dot(v2);}
 
 G4SignedDistanceField::G4SignedDistanceField() : G4VSolid("dummy") {}
 
@@ -90,10 +94,11 @@ G4ThreeVector G4SignedDistanceField::RayMarch(const G4ThreeVector &p, const G4Th
 
     G4int iIter = 0;
     G4ThreeVector p1(p);
+
     do {
         p1 = p1+fabs(Evaluate(p1))*d.unit();
         iIter++;
-    } while(fabs(Evaluate(p1)) > kCarTolerance && iIter < 100);
+    } while(fabs(Evaluate(p1)) > kCarTolerance && iIter < 250);
 
     if(fabs(Evaluate(p1)) < kCarTolerance)
         return p1;
@@ -142,7 +147,7 @@ double G4SignedDistanceField::DistanceToIn(const G4ThreeVector &p, const G4Three
 
 double G4SignedDistanceField::DistanceToIn(const G4ThreeVector &p) const {
     auto d = Evaluate(p);
-    return d > 0 ? d : kInfinity;
+    return d > 0 ? d : 0;
 }
 
 double G4SignedDistanceField::DistanceToOut(const G4ThreeVector &p, const G4ThreeVector &d,
@@ -157,7 +162,7 @@ double G4SignedDistanceField::DistanceToOut(const G4ThreeVector &p, const G4Thre
 
 double G4SignedDistanceField::DistanceToOut(const G4ThreeVector &p) const {
     auto d = Evaluate(p);
-    return d < 0 ? fabs(d) : kInfinity;
+    return d < 0 ? fabs(d) : 0;
 }
 
 void G4SignedDistanceField::DescribeYourselfTo (G4VGraphicsScene& scene) const {

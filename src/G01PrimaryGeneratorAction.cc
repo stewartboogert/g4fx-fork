@@ -49,11 +49,8 @@ G01PrimaryGeneratorAction::G01PrimaryGeneratorAction()
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   fParticleGun->SetParticleDefinition(
-               particleTable->FindParticle(particleName="e-"));
-  fParticleGun->SetParticleEnergy(20*GeV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0*m, 0, 0));
-  fParticleGun->SetParticleMomentumDirection(G4ParticleMomentum(0,0,1));
-
+               particleTable->FindParticle(particleName="geantino"));
+  fParticleGun->SetParticleEnergy(5*GeV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -68,7 +65,9 @@ G01PrimaryGeneratorAction::~G01PrimaryGeneratorAction()
 void G01PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   G4int i = anEvent->GetEventID() % 3;
-  G4ThreeVector v(1.0,0.0,0.0);
+
+  G4ThreeVector v(-1,0,0.0);
+  /*
   switch(i)
   {
     case 0:
@@ -80,6 +79,8 @@ void G01PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       v.setZ(0.1);
       break;
   }
+   */
+  fParticleGun->SetParticlePosition(G4ThreeVector(4.5*m,0*m,0));
   fParticleGun->SetParticleMomentumDirection(v);
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }

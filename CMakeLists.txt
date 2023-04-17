@@ -54,6 +54,9 @@ target_link_libraries(dicom_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES}
 add_executable(tracking_test tracking_test.cc ${sources} ${headers})
 target_link_libraries(tracking_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
+add_executable(bsp_test bsp_test.cc ${sources} ${headers})
+target_link_libraries(bsp_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
+
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
 # build G01. This is so that we can run the executable directly because it

@@ -46,8 +46,12 @@ namespace shader {
     G4ThreeVector clamp(const G4ThreeVector v, const G4ThreeVector min, const G4ThreeVector max);
     G4TwoVector clamp(const G4TwoVector &v,  G4double min,  G4double max);
     G4ThreeVector clamp(const G4ThreeVector v, G4double min, G4double max);
+    G4TwoVector xy(const G4ThreeVector &v);
+    G4TwoVector xz(const G4ThreeVector &v);
+    G4TwoVector yz(const G4ThreeVector &v);
+    G4double dot(const G4TwoVector &v1, const G4TwoVector &v2);
+    G4double dot(const G4ThreeVector &v1, const G4ThreeVector &v2);
 };
-
 
 class G4SignedDistanceField : public G4VSolid {
 public:
@@ -257,53 +261,122 @@ public:
     G4TorusSDF() : G4SignedDistanceField("dummy") {
     }
     G4TorusSDF(G4String name,
-                  G4double dHalfX, G4double dHalfY, G4double dHalfZ,
-                  G4double e) : G4SignedDistanceField(name) {
-        fX = 2.0*dHalfX;
-        fY = 2.0*dHalfY;
-        fZ = 2.0*dHalfZ;
-        fSize = G4ThreeVector(fX,fY,fZ);
-        fE = e;
+                  G4double r1,
+                  G4double r2) : G4SignedDistanceField(name) {
+        fR1 = r1;
+        fR2 = r2;
     }
 
     virtual double Evaluate(const G4ThreeVector &p ) const override {
         using namespace shader;
         using namespace std;
 
-        return 0;
+        auto t = vec2(fR1, fR2);
+        auto q = vec2(length(vec2(p.x(), p.z()))-t.x(),p.y());
+        return length(q)-t.y();
     }
 
     virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
-        bmin.set(-fX, -fY, -fZ);
-        bmax.set( fX,  fY,  fZ);
+        bmin.set(-fR1-fR2,-fR2, -fR1-fR2);
+        bmax.set( fR1+fR2, fR2,  fR1+fR2);
     }
 
     virtual G4GeometryType GetEntityType() const override {return G4String("G4TorusSDF");}
 
 private:
-    G4double fX;
-    G4double fY;
-    G4double fZ;
-    G4ThreeVector fSize;
-    G4double fE;
+    G4double fR1;
+    G4double fR2;
 };
 
+class G4TorusCappedSDF : public G4SignedDistanceField {
+public:
+    G4TorusCappedSDF() : G4SignedDistanceField("dummy") {
+    }
 
+    G4TorusCappedSDF(G4String name,
+               G4double r1,
+               G4double r2,
+               G4double cx,
+               G4double cy) : G4SignedDistanceField(name) {
+        fR1 = r1;
+        fR2 = r2;
+        fCx = cx;
+        fCy = cy;
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p1 ) const override {
+        using namespace shader;
+        using namespace std;
+
+        auto p  = vec3(abs(p1.x()), p1.y(), p1.z());
+        auto k = (fCy*p.x()>fCx*p.y()) ? dot(xy(p),vec2(fCx,fCy)) : length(xy(p));
+        return sqrt( dot(p,p) + fR1*fR1 - 2.0*fR1*k ) - fR2;
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        bmin.set(-fR1-fR2,-fR1-fR2, -fR2);
+        bmax.set( fR1+fR2, fR1+fR2, fR2 );
+    }
+
+    virtual G4GeometryType GetEntityType() const override {return G4String("G4TorusCappedSDF");}
+
+private:
+    G4double fCx;
+    G4double fCy;
+    G4double fR1;
+    G4double fR2;
+
+};
+
+class G4LinkSDF : public G4SignedDistanceField {
+public:
+    G4LinkSDF() : G4SignedDistanceField("dummy") {
+    }
+
+    G4LinkSDF(G4String name,
+                     G4double r1,
+                     G4double r2,
+                     G4double le) : G4SignedDistanceField(name) {
+        fR1 = r1;
+        fR2 = r2;
+        fLe = le;
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p ) const override {
+        using namespace shader;
+        using namespace std;
+
+        auto q = vec3(p.x(),max(abs(p.y())-fLe,0.0), p.z());
+        return length(vec2(length(xy(q))-fR1,q.z())) - fR2;
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        bmin.set(-fR1-fR2,-fR1-fR2-fLe, -fR2);
+        bmax.set( fR1+fR2, fR1+fR2+fLe, fR2 );
+    }
+
+    virtual G4GeometryType GetEntityType() const override {return G4String("G4TorusCappedSDF");}
+
+private:
+    G4double fR1;
+    G4double fR2;
+    G4double fLe;
+};
 
 class G4DisplacedSDF : public G4SignedDistanceField {
 public:
     G4DisplacedSDF(const G4String &name,
-                     const G4RotationMatrix &rotation,
-                     const G4ThreeVector &translation,
-                     G4SignedDistanceField *sdf) :
-                     G4SignedDistanceField(name),
-                     fSdf(sdf) {
+                         G4SignedDistanceField *sdf,
+                         G4RotationMatrix *rotation,
+                   const G4ThreeVector &translation) :
+                   G4SignedDistanceField(name),
+                   fSdf(sdf) {
         fTransformation = new G4AffineTransform(rotation,translation);
     }
 
     G4DisplacedSDF(const G4String &name,
-                   const G4Transform3D &transform,
-                   G4SignedDistanceField *sdf) :
+                         G4SignedDistanceField *sdf,
+                   const G4Transform3D &transform) :
             G4SignedDistanceField(name),
             fSdf(sdf) {
         fTransformation = new G4AffineTransform(transform.getRotation().inverse(),
@@ -311,26 +384,128 @@ public:
     }
 
     G4DisplacedSDF(const G4String &name,
-                   const G4AffineTransform &transform,
-                   G4SignedDistanceField *sdf) :
+                         G4SignedDistanceField *sdf,
+                   const G4AffineTransform &transform) :
             G4SignedDistanceField(name),
             fSdf(sdf) {
         fTransformation = new G4AffineTransform(transform);
     }
 
-    virtual double Evaluate(const G4ThreeVector &) const override {
-        return 0;
+    virtual double Evaluate(const G4ThreeVector &p) const override {
+        return fSdf->Evaluate(fTransformation->TransformPoint(p));
     }
 
     virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
-        bmin.set(0, 0, 0);
-        bmax.set(0, 0, 0);
+        fSdf->BoundingLimits(bmin,bmax);
 
+        bmin = fTransformation->Inverse().TransformPoint(bmin);
+        bmax = fTransformation->Inverse().TransformPoint(bmax);
     }
 
 private:
     G4AffineTransform *fTransformation;
     G4SignedDistanceField *fSdf;
 };
+// G4ScaledSDF
+// G4SymmetrySDF
+
+class G4BooleanSDF : public G4SignedDistanceField {
+public:
+    G4BooleanSDF(const G4String& pName,
+                 G4SignedDistanceField* pSolidA,
+                 G4SignedDistanceField* pSolidB) : G4SignedDistanceField(pName), fPtrSolidA(pSolidA), fPtrSolidB(pSolidB) {}
+
+    G4BooleanSDF(const G4String& pName,
+                 G4SignedDistanceField* pSolidA ,
+                 G4SignedDistanceField* pSolidB,
+                 G4RotationMatrix* rotMatrix,
+                 const G4ThreeVector& transVector) : G4SignedDistanceField(pName), fPtrSolidA(pSolidA) {
+        fPtrSolidB = new G4DisplacedSDF("placedB",pSolidB,rotMatrix,transVector) ;
+    };
+
+    G4BooleanSDF(const G4String& pName,
+                 G4SignedDistanceField* pSolidA ,
+                 G4SignedDistanceField* pSolidB ,
+                 const G4Transform3D& transform) : G4SignedDistanceField(pName), fPtrSolidA(pSolidA) {
+        fPtrSolidB = new G4DisplacedSDF("placedB",pSolidB,transform) ;
+    };
+
+protected:
+    G4SignedDistanceField* fPtrSolidA = nullptr;
+    G4SignedDistanceField* fPtrSolidB = nullptr;
+};
+// G4IntersectionSDF
+class G4UnionSDF : public G4BooleanSDF {
+public:
+
+    G4UnionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2) :
+            G4BooleanSDF(name, sdf1, sdf2){
+    }
+
+    G4UnionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               G4RotationMatrix *rotation,
+               const G4ThreeVector &translation) :
+            G4BooleanSDF(name, sdf1, sdf2, rotation, translation) {
+    }
+
+    G4UnionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               const G4Transform3D &transform) :
+            G4BooleanSDF(name, sdf1, sdf2, transform) {
+    }
+
+    G4UnionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               const G4AffineTransform &transform) :
+            G4BooleanSDF(name, sdf1, sdf2, transform) {
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p) const override {
+        using namespace std;
+
+        auto d1 = fPtrSolidA->Evaluate(p);
+        auto d2 = fPtrSolidB->Evaluate(p);
+        return min(d1,d2);
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        auto b1min = G4ThreeVector();
+        auto b1max = G4ThreeVector();
+        fPtrSolidA->BoundingLimits(b1min,b1max);
+
+        auto b2min = G4ThreeVector();
+        auto b2max = G4ThreeVector();
+        fPtrSolidB->BoundingLimits(b2min,b2max);
+
+        using namespace shader;
+
+        bmin = min(b1min,b2min);
+        bmax = max(b1max,b2max);
+    }
+
+private:
+
+};
+// G4SubtractionSDF
+// G4MultiUnionSDF
+
+// G4IntersectionSmoothSDF
+// G4UnionSmoothSDF
+// G4SubtractionSmoothSDF
+// G4MultiUnionSmoothSDF
+
+// G4ElongationSDF
+// G4RoundingSDF
+// G4RevolutionSDF
+// G4ExtrusionSDF
+
+// G4TwistSDF
+// G4BendSDF
 
 #endif //G4SIGNEDDISTANCEFIELD_HH
