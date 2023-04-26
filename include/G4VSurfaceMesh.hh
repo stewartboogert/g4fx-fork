@@ -6,6 +6,7 @@
 #define GEANT4_G4VSURFACEMESH_HH
 
 #include "G4Types.hh"
+#include <vector>
 
 class G4Polyhedron;
 class G4PolyhedronArbitrary;
