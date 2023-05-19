@@ -49,8 +49,8 @@ G01PrimaryGeneratorAction::G01PrimaryGeneratorAction()
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   fParticleGun->SetParticleDefinition(
-               particleTable->FindParticle(particleName="geantino"));
-  fParticleGun->SetParticleEnergy(5*GeV);
+               particleTable->FindParticle(particleName="e-"));
+  fParticleGun->SetParticleEnergy(10*GeV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -66,7 +66,7 @@ void G01PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   G4int i = anEvent->GetEventID() % 3;
 
-  G4ThreeVector v(-1,0,0.0);
+  G4ThreeVector v(1,0,0.0);
   /*
   switch(i)
   {
