@@ -438,7 +438,59 @@ protected:
     G4SignedDistanceField* fPtrSolidA = nullptr;
     G4SignedDistanceField* fPtrSolidB = nullptr;
 };
-// G4IntersectionSDF
+
+class G4IntersectionSDF : public G4BooleanSDF {
+public:
+
+    G4IntersectionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2) :
+            G4BooleanSDF(name, sdf1, sdf2){
+    }
+
+    G4IntersectionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               G4RotationMatrix *rotation,
+               const G4ThreeVector &translation) :
+            G4BooleanSDF(name, sdf1, sdf2, rotation, translation) {
+    }
+
+    G4IntersectionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               const G4Transform3D &transform) :
+            G4BooleanSDF(name, sdf1, sdf2, transform) {
+    }
+
+    G4IntersectionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               const G4AffineTransform &transform) :
+            G4BooleanSDF(name, sdf1, sdf2, transform) {
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p) const override {
+        using namespace std;
+
+        auto d1 = fPtrSolidA->Evaluate(p);
+        auto d2 = fPtrSolidB->Evaluate(p);
+        return max(d1,d2);
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        auto b1min = G4ThreeVector();
+        auto b1max = G4ThreeVector();
+        fPtrSolidA->BoundingLimits(b1min,b1max);
+
+        bmin = b1min;
+        bmax = b1max;
+    }
+
+private:
+
+};
+
 class G4UnionSDF : public G4BooleanSDF {
 public:
 
@@ -496,7 +548,208 @@ public:
 private:
 
 };
-// G4SubtractionSDF
+
+class G4SubtractionSDF : public G4BooleanSDF {
+public:
+
+    G4SubtractionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2) :
+            G4BooleanSDF(name, sdf1, sdf2){
+    }
+
+    G4SubtractionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               G4RotationMatrix *rotation,
+               const G4ThreeVector &translation) :
+            G4BooleanSDF(name, sdf1, sdf2, rotation, translation) {
+    }
+
+    G4SubtractionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               const G4Transform3D &transform) :
+            G4BooleanSDF(name, sdf1, sdf2, transform) {
+    }
+
+    G4SubtractionSDF(const G4String &name,
+               G4SignedDistanceField *sdf1,
+               G4SignedDistanceField *sdf2,
+               const G4AffineTransform &transform) :
+            G4BooleanSDF(name, sdf1, sdf2, transform) {
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p) const override {
+        using namespace std;
+
+        auto d1 = fPtrSolidA->Evaluate(p);
+        auto d2 = fPtrSolidB->Evaluate(p);
+        return min(-d1,d2);
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        auto b1min = G4ThreeVector();
+        auto b1max = G4ThreeVector();
+        fPtrSolidA->BoundingLimits(b1min,b1max);
+
+        auto b2min = G4ThreeVector();
+        auto b2max = G4ThreeVector();
+        fPtrSolidB->BoundingLimits(b2min,b2max);
+
+        using namespace shader;
+
+        bmin = min(b1min,b2min);
+        bmax = max(b1max,b2max);
+    }
+
+private:
+
+};
+
+class G4BooleanSmoothSDF {
+public:
+    G4BooleanSmoothSDF(G4double kIn) : k(kIn) {}
+protected:
+    G4double k;
+};
+
+class G4IntersectionSmoothSDF : public G4IntersectionSDF, G4BooleanSmoothSDF {
+public:
+    G4IntersectionSmoothSDF(const G4String &name,
+                            G4SignedDistanceField *sdf1,
+                            G4SignedDistanceField *sdf2,
+                            G4double kIn) :
+            G4IntersectionSDF(name, sdf1, sdf2), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4IntersectionSmoothSDF(const G4String &name,
+                            G4SignedDistanceField *sdf1,
+                            G4SignedDistanceField *sdf2,
+                            G4RotationMatrix *rotation,
+                            const G4ThreeVector &translation,
+                            G4double kIn) :
+            G4IntersectionSDF(name, sdf1, sdf2, rotation, translation), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4IntersectionSmoothSDF(const G4String &name,
+                            G4SignedDistanceField *sdf1,
+                            G4SignedDistanceField *sdf2,
+                            const G4Transform3D &transform,
+                            G4double kIn) :
+            G4IntersectionSDF(name, sdf1, sdf2, transform), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4IntersectionSmoothSDF(const G4String &name,
+                            G4SignedDistanceField *sdf1,
+                            G4SignedDistanceField *sdf2,
+                            const G4AffineTransform &transform,
+                            G4double kIn) :
+            G4IntersectionSDF(name, sdf1, sdf2, transform), G4BooleanSmoothSDF(kIn) {
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p) const override {
+        using namespace std;
+
+        auto d1 = fPtrSolidA->Evaluate(p);
+        auto d2 = fPtrSolidB->Evaluate(p);
+
+        auto h = shader::clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
+        return shader::mix( d2, d1, h ) + k*h*(1.0-h);
+    }
+};
+
+class G4UnionSmoothSDF : public G4UnionSDF, G4BooleanSmoothSDF {
+public:
+    G4UnionSmoothSDF(const G4String &name,
+                     G4SignedDistanceField *sdf1,
+                     G4SignedDistanceField *sdf2,
+                     G4double kIn) :
+            G4UnionSDF(name, sdf1, sdf2), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4UnionSmoothSDF(const G4String &name,
+                     G4SignedDistanceField *sdf1,
+                     G4SignedDistanceField *sdf2,
+                     G4RotationMatrix *rotation,
+                     const G4ThreeVector &translation,
+                     G4double kIn) :
+            G4UnionSDF(name, sdf1, sdf2, rotation, translation), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4UnionSmoothSDF(const G4String &name,
+                     G4SignedDistanceField *sdf1,
+                     G4SignedDistanceField *sdf2,
+                     const G4Transform3D &transform,
+                     G4double kIn) :
+            G4UnionSDF(name, sdf1, sdf2, transform), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4UnionSmoothSDF(const G4String &name,
+                     G4SignedDistanceField *sdf1,
+                     G4SignedDistanceField *sdf2,
+                     const G4AffineTransform &transform,
+                     G4double kIn) :
+            G4UnionSDF(name, sdf1, sdf2, transform), G4BooleanSmoothSDF(kIn) {
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p) const override {
+        using namespace std;
+
+        auto d1 = fPtrSolidA->Evaluate(p);
+        auto d2 = fPtrSolidB->Evaluate(p);
+
+        auto h = shader::clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
+        return shader::mix( d2, d1, h ) - k*h*(1.0-h);
+    }
+};
+
+class G4SubtractionSmoothSDF : public G4SubtractionSDF, G4BooleanSmoothSDF {
+public:
+    G4SubtractionSmoothSDF(const G4String &name,
+                           G4SignedDistanceField *sdf1,
+                           G4SignedDistanceField *sdf2,
+                           G4double kIn) :
+            G4SubtractionSDF(name, sdf1, sdf2), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4SubtractionSmoothSDF(const G4String &name,
+                           G4SignedDistanceField *sdf1,
+                           G4SignedDistanceField *sdf2,
+                           G4RotationMatrix *rotation,
+                           const G4ThreeVector &translation,
+                           G4double kIn) :
+            G4SubtractionSDF(name, sdf1, sdf2, rotation, translation), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4SubtractionSmoothSDF(const G4String &name,
+                           G4SignedDistanceField *sdf1,
+                           G4SignedDistanceField *sdf2,
+                           const G4Transform3D &transform,
+                           G4double kIn) :
+            G4SubtractionSDF(name, sdf1, sdf2, transform), G4BooleanSmoothSDF(kIn) {
+    }
+
+    G4SubtractionSmoothSDF(const G4String &name,
+                           G4SignedDistanceField *sdf1,
+                           G4SignedDistanceField *sdf2,
+                           const G4AffineTransform &transform,
+                           G4double kIn) :
+            G4SubtractionSDF(name, sdf1, sdf2, transform), G4BooleanSmoothSDF(kIn) {
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p) const override {
+        using namespace std;
+
+        auto d1 = fPtrSolidA->Evaluate(p);
+        auto d2 = fPtrSolidB->Evaluate(p);
+
+        auto h = shader::clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
+        return shader::mix( d2, -d1, h ) + k*h*(1.0-h); ;
+    }
+};
+
+
 // G4MultiUnionSDF
 
 // G4IntersectionSmoothSDF
