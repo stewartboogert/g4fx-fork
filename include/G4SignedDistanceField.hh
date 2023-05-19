@@ -41,6 +41,9 @@ namespace shader {
     G4ThreeVector min(const G4ThreeVector &v1, const G4ThreeVector &v2);
     G4ThreeVector min(const G4TwoVector &v1, G4double d2);
     G4ThreeVector min(const G4ThreeVector &v1, G4double &d2);
+    G4double      mix(const G4double v1, const G4double v2, const G4double a);
+    G4TwoVector   mix(const G4TwoVector &v1, const G4TwoVector &v2, const G4double a);
+    G4ThreeVector mix(const G4ThreeVector &v1, const G4ThreeVector &v2, const G4double a);
     G4double clamp(G4double x, G4double min, G4double max);
     G4TwoVector clamp(const G4TwoVector &v, const G4TwoVector min, const G4TwoVector max);
     G4ThreeVector clamp(const G4ThreeVector v, const G4ThreeVector min, const G4ThreeVector max);
@@ -406,6 +409,7 @@ private:
     G4AffineTransform *fTransformation;
     G4SignedDistanceField *fSdf;
 };
+
 // G4ScaledSDF
 // G4SymmetrySDF
 

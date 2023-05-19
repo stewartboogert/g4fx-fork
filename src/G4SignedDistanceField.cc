@@ -57,6 +57,15 @@ G4ThreeVector shader::min(const G4ThreeVector &v1, G4double &d2)
     {return G4ThreeVector(std::min(v1.x(), d2),
                           std::min(v1.y(), d2),
                           std::min(v1.z(), d2));}
+G4double      shader::mix(const G4double v1, const G4double v2, const G4double a)
+    {return v1*(1-a)+v2*a;}
+
+G4TwoVector   shader::mix(const G4TwoVector &v1, const G4TwoVector &v2, const G4double a)
+    {return v1*(1-a)+v2*a;}
+
+G4ThreeVector shader::mix(const G4ThreeVector &v1, const G4ThreeVector &v2, const G4double a)
+    {return v1*(1-a)+v2*a;}
+
 G4double shader::clamp(G4double x, G4double min, G4double max)
     {return x < min ? min : x > max ? max : x;}
 G4TwoVector shader::clamp(const G4TwoVector &v, const G4TwoVector min, const G4TwoVector max)
