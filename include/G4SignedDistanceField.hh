@@ -15,6 +15,7 @@
 #include "G4RotationMatrix.hh"
 #include "G4Transform3D.hh"
 #include "G4AffineTransform.hh"
+#include "G4ScaleTransform.hh"
 
 class G4VoxelLimits;
 class G4AffineTransform;
@@ -141,9 +142,9 @@ public:
         fSize = G4ThreeVector(fX,fY,fZ);
     }
     G4BoxSDF(G4String name, G4double dHalfX, G4double dHalfY, G4double dHalfZ) : G4SignedDistanceField(name) {
-        fX = 2.0*dHalfX;
-        fY = 2.0*dHalfY;
-        fZ = 2.0*dHalfZ;
+        fX = 1.0*dHalfX;
+        fY = 1.0*dHalfY;
+        fZ = 1.0*dHalfZ;
         fSize = G4ThreeVector(fX,fY,fZ);
     }
 
@@ -160,8 +161,8 @@ public:
     }
 
     virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
-        bmin.set(-fX, -fY, -fZ);
-        bmax.set( fX,  fY,  fZ);
+        bmin.set(-fSize.x(), -fSize.y(), -fSize.z());
+        bmax.set( fSize.x(),  fSize.y(),  fSize.z());
     }
 
     virtual G4GeometryType GetEntityType() const override {return G4String("G4BoxSDF");}
@@ -171,7 +172,6 @@ private:
     G4double fY;
     G4double fZ;
     G4ThreeVector fSize;
-    G4double delta;
 };
 
 class G4BoxRoundSDF : public G4SignedDistanceField {
@@ -400,14 +400,14 @@ public:
     }
 
     virtual double Evaluate(const G4ThreeVector &p) const override {
-        return fSdf->Evaluate(fTransformation->TransformPoint(p));
+        return fSdf->Evaluate(fTransformation->Inverse().TransformPoint(p));
     }
 
     virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
         fSdf->BoundingLimits(bmin,bmax);
 
-        bmin = fTransformation->Inverse().TransformPoint(bmin);
-        bmax = fTransformation->Inverse().TransformPoint(bmax);
+        bmin = fTransformation->TransformPoint(bmin);
+        bmax = fTransformation->TransformPoint(bmax);
     }
 
 private:
@@ -415,7 +415,31 @@ private:
     G4SignedDistanceField *fSdf;
 };
 
-// G4ScaledSDF
+class G4ScaledSDF : public G4SignedDistanceField {
+public:
+    G4ScaledSDF(const G4String &name,
+                G4SignedDistanceField *sdf,
+                const G4Scale3D& pScale) :
+                G4SignedDistanceField(name), fSdf(sdf) {
+        fScale = new G4ScaleTransform(pScale);
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p) const override {
+        using shader::operator/;
+        return fSdf->Evaluate(p/fScale->GetScale());
+    }
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+        fSdf->BoundingLimits(bmin,bmax);
+        bmin = fScale->InverseTransform(bmin);
+        bmax = fScale->InverseTransform(bmax);
+    }
+
+private:
+    G4SignedDistanceField *fSdf;
+    G4ScaleTransform* fScale;
+};
+
 // G4SymmetrySDF
 
 class G4BooleanSDF : public G4SignedDistanceField {
@@ -746,14 +770,13 @@ public:
     virtual double Evaluate(const G4ThreeVector &p) const override {
         using namespace std;
 
-        auto d1 = fPtrSolidA->Evaluate(p);
-        auto d2 = fPtrSolidB->Evaluate(p);
+        auto d2 = fPtrSolidA->Evaluate(p);
+        auto d1 = fPtrSolidB->Evaluate(p);
 
         auto h = shader::clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
-        return shader::mix( d2, -d1, h ) + k*h*(1.0-h); ;
+        return shader::mix( d2, -d1, h ) + k*h*(1.0-h);
     }
 };
-
 
 // G4MultiUnionSDF
 
