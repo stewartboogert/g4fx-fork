@@ -51,23 +51,25 @@ public:
                                            0,
                                            false);
 
-        auto solidSdf1  = new G4SphereSDF("solidSdf1",1*m);
-        auto solidSdf2  = new G4BoxSDF("solidSdf2",3*m,1*m,1*m);
+        auto solidSdf1  = new G4SphereSDF("solidSdf1",1.0*m);
+        auto solidSdf2  = new G4BoxSDF("solidSdf2",1*m,1*m,1*m);
         auto solidSdf3  = new G4BoxRoundSDF("solidSdf3",3*m, 3*m,3*m, 0.5*m);
         auto solidSdf4  = new G4BoxFrameSDF("solidSdf4",0.5*m, 0.3*m,0.5*m,0.1*m);
         auto solidSdf5  = new G4TorusSDF("solidSdf5",1.5*m,0.25*m);
         auto solidSdf6  = new G4TorusCappedSDF("solidSdf6",5*m,0.5*m, cos(0.5), sin(0.5));
         auto solidSdf7  = new G4LinkSDF("solidSdf7",2.5*m,0.5*m,2.5*m);
 
-        auto solidUnion      = new G4UnionSDF("union",solidSdf1,solidSdf6,nullptr,G4ThreeVector(-2*m,0,0));
-        auto solidIntersection = new G4IntersectionSDF("intersection",solidSdf6,solidSdf2,nullptr,G4ThreeVector(-2*m,0,0));
-        auto solidSubtraction = new G4IntersectionSDF("difference",solidSdf6,solidSdf2,nullptr,G4ThreeVector(-2*m,0,0));
+        auto solidScaled = new G4ScaledSDF("scaled",solidSdf2,G4Scale3D(1,2,3));
 
-        auto solidUnionSmooth = new G4UnionSmoothSDF("unionSmooth",solidSdf7,solidSdf2,nullptr,G4ThreeVector(0*m,0,0),1*m);
-        auto solidIntersectionSmooth = new G4IntersectionSmoothSDF("intersectionSmooth",solidSdf7,solidSdf2,nullptr,G4ThreeVector(0*m,0,0),1*m);
-        auto solidSubtractionSmooth = new G4SubtractionSmoothSDF("subtractionSmooth",solidSdf7,solidSdf2,nullptr,G4ThreeVector(0*m,0,0),1*m);
+        auto solidUnion      = new G4UnionSDF("union",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0));
+        auto solidIntersection = new G4IntersectionSDF("intersection",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0));
+        auto solidSubtraction = new G4SubtractionSDF("subtraction",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0));
 
-        auto logicSdf = new G4LogicalVolume(solidSubtractionSmooth,sdf_mat,"sdf");
+        auto solidUnionSmooth = new G4UnionSmoothSDF("unionSmooth",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0),0.25*m);
+        auto solidIntersectionSmooth = new G4IntersectionSmoothSDF("intersectionSmooth",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0),0.25*m);
+        auto solidSubtractionSmooth = new G4SubtractionSmoothSDF("subtractionSmooth",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0),0.25*m);
+
+        auto logicSdf = new G4LogicalVolume(solidScaled,sdf_mat,"sdf");
 
         auto physSdf = new G4PVPlacement(nullptr,  // no rotation
                                          G4ThreeVector(0,0,0),
