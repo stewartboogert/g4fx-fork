@@ -88,6 +88,15 @@ G4TwoVector shader::yz(const G4ThreeVector &v) {return G4TwoVector(v.y(),v.z());
 G4double shader::dot(const G4TwoVector &v1, const G4TwoVector &v2) {return v1.dot(v2);}
 G4double shader::dot(const G4ThreeVector &v1, const G4ThreeVector &v2) {return v1.dot(v2);}
 
+G4TwoVector shader::operator/(const G4TwoVector &v1, G4double v2)
+    { return G4TwoVector(v1.x()/v2, v1.y()/v2); }
+G4TwoVector shader::operator/(const G4TwoVector &v1, const G4TwoVector &v2)
+    { return G4TwoVector(v1.x()/v2.x(), v1.y()/v2.y()); }
+G4ThreeVector shader::operator/(const G4ThreeVector &v1, G4double v2)
+    { return G4ThreeVector(v1.x()/v2, v1.y()/v2, v1.z()/v2); }
+G4ThreeVector shader::operator/(const G4ThreeVector &v1, const G4ThreeVector &v2)
+    { return G4ThreeVector(v1.x()/v2.x(), v1.y()/v2.y(), v1.z()/v2.z()); }
+
 G4SignedDistanceField::G4SignedDistanceField() : G4VSolid("dummy") {}
 
 G4SignedDistanceField::G4SignedDistanceField(const G4String name) : G4VSolid(name) {}
@@ -206,8 +215,8 @@ vtkSmartPointer<vtkPolyData> G4VtkSignedDistanceField::CubeMarch() {
     G4ThreeVector bmin;
     G4ThreeVector bmax;
     fSdf->BoundingLimits(bmin, bmax);
-    bmin = bmin*1.1;
-    bmax = bmax*1.1;
+    bmin = bmin*1.2;
+    bmax = bmax*1.2;
     sampled->SetModelBounds(bmin.x(), bmax.x(), bmin.y(), bmax.y(), bmin.z(), bmax.z());
     sampled->SetImplicitFunction(this);
     sampled->Update();

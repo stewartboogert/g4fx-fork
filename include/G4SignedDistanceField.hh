@@ -54,6 +54,11 @@ namespace shader {
     G4TwoVector yz(const G4ThreeVector &v);
     G4double dot(const G4TwoVector &v1, const G4TwoVector &v2);
     G4double dot(const G4ThreeVector &v1, const G4ThreeVector &v2);
+    G4TwoVector operator/(const G4TwoVector &v1, G4double v2);
+    G4TwoVector operator/(const G4TwoVector &v1, const G4TwoVector &v2);
+    G4ThreeVector operator/(const G4ThreeVector &v1, G4double v2);
+    G4ThreeVector operator/(const G4ThreeVector &v1, const G4ThreeVector &v2);
+
 };
 
 class G4SignedDistanceField : public G4VSolid {
