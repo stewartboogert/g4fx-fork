@@ -65,6 +65,11 @@ public:
         auto solidIntersection = new G4IntersectionSDF("intersection",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0));
         auto solidSubtraction = new G4SubtractionSDF("subtraction",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0));
 
+        auto multiUnion = new G4MultiUnionSDF("multiunion");
+        for(auto i = 0; i<20;i++) {
+
+        }
+
         auto solidUnionSmooth = new G4UnionSmoothSDF("unionSmooth",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0),0.25*m);
         auto solidIntersectionSmooth = new G4IntersectionSmoothSDF("intersectionSmooth",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0),0.25*m);
         auto solidSubtractionSmooth = new G4SubtractionSmoothSDF("subtractionSmooth",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0),0.25*m);

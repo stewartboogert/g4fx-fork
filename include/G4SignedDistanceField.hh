@@ -16,6 +16,7 @@
 #include "G4Transform3D.hh"
 #include "G4AffineTransform.hh"
 #include "G4ScaleTransform.hh"
+#include "G4Vector3D.hh"
 
 class G4VoxelLimits;
 class G4AffineTransform;
@@ -778,11 +779,83 @@ public:
     }
 };
 
-// G4MultiUnionSDF
+class G4MultiUnionSDF : public G4SignedDistanceField {
+public:
+    G4MultiUnionSDF() : G4SignedDistanceField() {};
+    G4MultiUnionSDF(const G4String& name) : G4SignedDistanceField(name) {};
+    ~G4MultiUnionSDF() {};
 
-// G4IntersectionSmoothSDF
-// G4UnionSmoothSDF
-// G4SubtractionSmoothSDF
+    // Build the multiple union by adding nodes
+    void AddNode(G4SignedDistanceField& solid, const G4Transform3D& trans) {
+        fSolids.push_back(&solid);
+        fTransformObjs.push_back(trans);  // Store a local copy of transformations
+    }
+
+    void AddNode(G4SignedDistanceField* solid, const G4Transform3D& trans) {
+        fSolids.push_back(solid);
+        fTransformObjs.push_back(trans);  // Store a local copy of transformations
+    }
+
+    virtual double Evaluate(const G4ThreeVector &p ) const override {
+        double sdfMin;
+        auto solidIter = fSolids.begin();
+        auto transIter = fTransformObjs.begin();
+
+        while (solidIter != fSolids.end() && transIter != fTransformObjs.end()) {
+            auto sdfNew = (*solidIter)->Evaluate(((*transIter).inverse())*G4Vector3D(p));
+            sdfMin = std::min(sdfMin,sdfNew);
+
+            solidIter++;
+            transIter++;
+
+        }
+        return sdfMin;
+    }
+
+
+    virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
+
+        using namespace shader;
+
+        auto solidIter = fSolids.begin();
+        auto transIter = fTransformObjs.begin();
+
+        while (solidIter != fSolids.end() && transIter != fTransformObjs.end()) {
+            auto b2min = G4ThreeVector();
+            auto b2max = G4ThreeVector();
+
+            (*solidIter)->BoundingLimits(b2min,b2max);
+
+            b2min = (*transIter)*G4Vector3D(b2min);
+            b2max = (*transIter)*G4Vector3D(b2max);
+
+            bmin = min(bmin,b2min);
+            bmax = max(bmax,b2max);
+
+            solidIter++;
+            transIter++;
+        }
+    }
+
+protected:
+    std::vector<G4SignedDistanceField*> fSolids;
+    std::vector<G4Transform3D>          fTransformObjs;
+};
+
+// G4ConeSDF
+// G4HexagonalPrismSDF
+// G4TriangularPrismSFD
+// G4CapsuleLineSFD
+// G4TubsSDF
+// Capped cone
+// G4TubsRoundedSDF
+// G4SolidAngleSDF
+// G4EllipsoidSDF
+// G4RhombusSDF
+// G4OctahedronSDF
+// G4PyramidSDF
+
+// G4MultiUnionSDF
 // G4MultiUnionSmoothSDF
 
 // G4ElongationSDF
