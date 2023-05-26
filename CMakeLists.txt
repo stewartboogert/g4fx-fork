@@ -26,13 +26,13 @@ ExternalProject_Add(tbb URL
   ${PROJECT_SOURCE_DIR}/3rdparty/oneTBB-2021.9.0.tar.gz
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/tbb
   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/3rdparty
-  BUILD_COMMAND make install -j8)
+  BUILD_COMMAND make install -j2)
 
 ExternalProject_Add(embree URL 
   ${PROJECT_SOURCE_DIR}/3rdparty/embree-4.0.1.tar.gz
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/embree
   CMAKE_ARGS -DTBB_DIR=${CMAKE_INSTALL_PREFIX}/3rdparty/tbb -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/3rdparty
-  BUILD_COMMAND make install -j8
+  BUILD_COMMAND make install -j2
   )
 
 ADD_DEPENDENCIES(embree tbb)

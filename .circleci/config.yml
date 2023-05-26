@@ -1,0 +1,29 @@
+# CircleCI configuration file
+version: 2.1
+
+jobs:
+  # Job one with a unique name
+  build-geant4fx:
+    docker:
+      - image: dboogert/g4v11.1.1
+        auth:
+          username: mydockerhub-user  # can specify string literal values
+          password: $DOCKERHUB_PASSWORD  # or project environment variable reference      
+    steps:
+      - run:
+          command: echo "$SHELL"
+          name: checkshell
+      - run:
+          command: g++ --version
+          name: checkgcc
+      - checkout
+      - run:
+          command: mkdir .build && cd .build && env  cmake .. && make -j4 VERBOSE=1
+          name: build
+
+workflows:
+  # Name of workflow
+  geant4fx-full-build:
+    # List of jobs that will run
+    jobs:
+      - build-geant4fx
