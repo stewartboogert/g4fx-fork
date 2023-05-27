@@ -5,6 +5,8 @@
 #ifndef SDFDETECTORCONSTRUCTION_HH
 #define SDFDETECTORCONSTRUCTION_HH
 
+#include <math.h>
+
 #include "G4SystemOfUnits.hh"
 #include "G4Types.hh"
 #include "G4VPhysicalVolume.hh"
@@ -59,6 +61,7 @@ public:
         auto solidSdf6  = new G4TorusCappedSDF("solidSdf6",5*m,0.5*m, cos(0.5), sin(0.5));
         auto solidSdf7  = new G4LinkSDF("solidSdf7",2.5*m,0.5*m,2.5*m);
 
+        auto solidDisplaced = new G4DisplacedSDF("displaced",solidSdf1,new G4RotationMatrix(G4ThreeVector(0,1,0),0.0),G4ThreeVector(0,0.0*m,0));
         auto solidScaled = new G4ScaledSDF("scaled",solidSdf2,G4Scale3D(1,2,3));
 
         auto solidUnion      = new G4UnionSDF("union",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0));
@@ -66,7 +69,24 @@ public:
         auto solidSubtraction = new G4SubtractionSDF("subtraction",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0));
 
         auto multiUnion = new G4MultiUnionSDF("multiunion");
-        for(auto i = 0; i<20;i++) {
+        for(auto i = 0; i<1;i++) {
+            auto rx = (double)rand() / RAND_MAX;
+            auto ry = (double)rand() / RAND_MAX;
+            auto rz = sqrt(pow(rx,2)+pow(ry,2));
+            auto dx = 1000*(double)rand() / RAND_MAX;
+            auto dy = 1000*(double)rand() / RAND_MAX;
+            auto dz = 1000*(double)rand() / RAND_MAX;
+            auto a = M_PI*(double)rand() / RAND_MAX;
+
+            rx = 0;
+            ry = 0;
+            rz = 0;
+            dx = 0;
+            dy = 0;
+            dz = 0;
+            a = 0;
+
+            multiUnion->AddNode(solidSdf2,G4Transform3D(G4RotationMatrix(G4ThreeVector(rx,ry,rz),a), G4ThreeVector(dx,dy,dz)));
 
         }
 
@@ -74,7 +94,7 @@ public:
         auto solidIntersectionSmooth = new G4IntersectionSmoothSDF("intersectionSmooth",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0),0.25*m);
         auto solidSubtractionSmooth = new G4SubtractionSmoothSDF("subtractionSmooth",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0),0.25*m);
 
-        auto logicSdf = new G4LogicalVolume(solidScaled,sdf_mat,"sdf");
+        auto logicSdf = new G4LogicalVolume(solidDisplaced,sdf_mat,"sdf");
 
         auto physSdf = new G4PVPlacement(nullptr,  // no rotation
                                          G4ThreeVector(0,0,0),

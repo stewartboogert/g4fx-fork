@@ -407,8 +407,43 @@ public:
     virtual void BoundingLimits(G4ThreeVector &bmin, G4ThreeVector &bmax) const override {
         fSdf->BoundingLimits(bmin,bmax);
 
-        bmin = fTransformation->TransformPoint(bmin);
-        bmax = fTransformation->TransformPoint(bmax);
+        G4ThreeVector b1(bmin.x(), bmin.y(), bmin.z());
+        G4ThreeVector b2(bmin.x(), bmin.y(), bmax.z());
+        G4ThreeVector b3(bmin.x(), bmax.y(), bmin.z());
+        G4ThreeVector b4(bmax.x(), bmin.y(), bmin.z());
+        G4ThreeVector b5(bmax.x(), bmax.y(), bmin.z());
+        G4ThreeVector b6(bmax.x(), bmin.y(), bmax.z());
+        G4ThreeVector b7(bmin.x(), bmax.y(), bmax.z());
+        G4ThreeVector b8(bmax.x(), bmax.y(), bmax.z());
+
+        b1 = fTransformation->TransformPoint(b1);
+        b2 = fTransformation->TransformPoint(b2);
+        b3 = fTransformation->TransformPoint(b3);
+        b4 = fTransformation->TransformPoint(b4);
+        b5 = fTransformation->TransformPoint(b5);
+        b6 = fTransformation->TransformPoint(b6);
+        b7 = fTransformation->TransformPoint(b7);
+        b8 = fTransformation->TransformPoint(b8);
+
+        bmin = shader::min(bmax,b1);
+        bmin = shader::min(bmin,b2);
+        bmin = shader::min(bmin,b3);
+        bmin = shader::min(bmin,b4);
+        bmin = shader::min(bmin,b5);
+        bmin = shader::min(bmin,b6);
+        bmin = shader::min(bmin,b7);
+        bmin = shader::min(bmin,b8);
+
+        bmax = shader::max(bmin,b1);
+        bmax = shader::max(bmax,b2);
+        bmax = shader::max(bmax,b3);
+        bmax = shader::max(bmax,b4);
+        bmax = shader::max(bmax,b5);
+        bmax = shader::max(bmax,b6);
+        bmax = shader::max(bmax,b7);
+        bmax = shader::max(bmax,b8);
+
+        G4cout << bmin << " " << bmax << G4endl;
     }
 
 private:

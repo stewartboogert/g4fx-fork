@@ -4,6 +4,8 @@
 #include "vtkSampleFunction.h"
 #include "vtkMarchingCubes.h"
 #include "vtkPolyData.h"
+#include "vtkPointData.h"
+#include "vtkCellData.h"
 
 #include "G4SignedDistanceField.hh"
 #include "G4Sphere.hh"
@@ -215,8 +217,8 @@ vtkSmartPointer<vtkPolyData> G4VtkSignedDistanceField::CubeMarch() {
     G4ThreeVector bmin;
     G4ThreeVector bmax;
     fSdf->BoundingLimits(bmin, bmax);
-    bmin = bmin*1.2;
-    bmax = bmax*1.2;
+    bmin = bmin*1.05;
+    bmax = bmax*1.05;
     sampled->SetModelBounds(bmin.x(), bmax.x(), bmin.y(), bmax.y(), bmin.z(), bmax.z());
     sampled->SetImplicitFunction(this);
     sampled->Update();
@@ -229,6 +231,12 @@ vtkSmartPointer<vtkPolyData> G4VtkSignedDistanceField::CubeMarch() {
     //G4VtkSurfaceMeshLoader *l = new G4VtkSurfaceMeshLoader();
     //l->SetPolyData(iso->GetOutput());
     //l->View();
+
+    auto polyd = iso->GetOutput();
+    auto pointd = polyd->GetPointData();
+    auto celld = polyd->GetCellData();
+
+    //pointd->InsertNextTuple
 
     return iso->GetOutput();
 }
