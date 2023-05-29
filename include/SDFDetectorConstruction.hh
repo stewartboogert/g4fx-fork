@@ -55,13 +55,14 @@ public:
 
         auto solidSdf1  = new G4SphereSDF("solidSdf1",1.0*m);
         auto solidSdf2  = new G4BoxSDF("solidSdf2",1*m,1*m,1*m);
+        auto solid2     = new G4Box("solid",1*m,1*m,1*m);
         auto solidSdf3  = new G4BoxRoundSDF("solidSdf3",3*m, 3*m,3*m, 0.5*m);
         auto solidSdf4  = new G4BoxFrameSDF("solidSdf4",0.5*m, 0.3*m,0.5*m,0.1*m);
         auto solidSdf5  = new G4TorusSDF("solidSdf5",1.5*m,0.25*m);
         auto solidSdf6  = new G4TorusCappedSDF("solidSdf6",5*m,0.5*m, cos(0.5), sin(0.5));
         auto solidSdf7  = new G4LinkSDF("solidSdf7",2.5*m,0.5*m,2.5*m);
 
-        auto solidDisplaced = new G4DisplacedSDF("displaced",solidSdf1,new G4RotationMatrix(G4ThreeVector(0,1,0),0.0),G4ThreeVector(0,0.0*m,0));
+        auto solidDisplaced = new G4DisplacedSDF("displaced",solidSdf1,new G4RotationMatrix(G4ThreeVector(0,1,0),0.0),G4ThreeVector(0*m,0*m,0.0*m));
         auto solidScaled = new G4ScaledSDF("scaled",solidSdf2,G4Scale3D(1,2,3));
 
         auto solidUnion      = new G4UnionSDF("union",solidSdf2,solidSdf1,nullptr,G4ThreeVector(1*m,0,0));
@@ -84,7 +85,7 @@ public:
             dx = 0;
             dy = 0;
             dz = 0;
-            a = 0;
+            a  = 0;
 
             multiUnion->AddNode(solidSdf2,G4Transform3D(G4RotationMatrix(G4ThreeVector(rx,ry,rz),a), G4ThreeVector(dx,dy,dz)));
 

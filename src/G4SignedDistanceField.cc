@@ -6,6 +6,8 @@
 #include "vtkPolyData.h"
 #include "vtkPointData.h"
 #include "vtkCellData.h"
+#include "vtkCubeSource.h"
+#include "vtkAppendPolyData.h"
 
 #include "G4SignedDistanceField.hh"
 #include "G4Sphere.hh"
@@ -115,10 +117,14 @@ G4ThreeVector G4SignedDistanceField::RayMarch(const G4ThreeVector &p, const G4Th
     G4int iIter = 0;
     G4ThreeVector p1(p);
 
+    G4double totalDist = 0;
+    G4double r = 0;
     do {
-        p1 = p1+fabs(Evaluate(p1))*d.unit();
+        r = fabs(Evaluate(p1));
+        totalDist += r;
+        p1 = p1+r*d.unit();
         iIter++;
-    } while(fabs(Evaluate(p1)) > kCarTolerance && iIter < 250);
+    } while(r > kCarTolerance && iIter < 1000);
 
     if(fabs(Evaluate(p1)) < kCarTolerance)
         return p1;
@@ -159,6 +165,10 @@ G4ThreeVector G4SignedDistanceField::SurfaceNormal(const G4ThreeVector& p) const
 
 double G4SignedDistanceField::DistanceToIn(const G4ThreeVector &p, const G4ThreeVector &d) const {
     auto p1 = RayMarch(p,d);
+
+    if(Inside(p) == kInside)
+        return 0;
+
     if(p1.x() == kInfinity)
         return kInfinity;
     else
@@ -175,7 +185,7 @@ double G4SignedDistanceField::DistanceToOut(const G4ThreeVector &p, const G4Thre
                                             G4ThreeVector* n) const {
     auto p1 = RayMarch(p,d);
     if(p1.x() == kInfinity)
-        return kInfinity;
+        return 0;
     else
         return (p1-p).mag();
 }
@@ -236,7 +246,19 @@ vtkSmartPointer<vtkPolyData> G4VtkSignedDistanceField::CubeMarch() {
     auto pointd = polyd->GetPointData();
     auto celld = polyd->GetCellData();
 
-    //pointd->InsertNextTuple
+    vtkNew<vtkCubeSource> cube;
+    cube->SetXLength(bmax.x()-bmin.x());
+    cube->SetYLength(bmax.y()-bmin.y());
+    cube->SetZLength(bmax.z()-bmin.z());
+    cube->SetCenter((bmax.x()+bmin.x())/2,
+                    (bmax.y()+bmin.y())/2,
+                    (bmax.z()+bmin.z())/2);
+    cube->Update();
 
-    return iso->GetOutput();
+    vtkNew<vtkAppendPolyData> append;
+    append->AddInputData(iso->GetOutput());
+    append->AddInputData(cube->GetOutput());
+    append->Update();
+
+    return append->GetOutput();
 }
