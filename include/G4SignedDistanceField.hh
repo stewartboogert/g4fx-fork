@@ -17,6 +17,7 @@
 #include "G4AffineTransform.hh"
 #include "G4ScaleTransform.hh"
 #include "G4Vector3D.hh"
+#include "G4TessellatedSolid.hh"
 
 class G4VoxelLimits;
 class G4AffineTransform;
@@ -87,7 +88,8 @@ public:
     virtual G4double DistanceToOut(const G4ThreeVector &p) const override;
     virtual G4GeometryType GetEntityType() const override {return G4String("G4SignedDistanceField");}
     virtual std::ostream& StreamInfo(std::ostream& os) const override {return os;}
-    virtual void DescribeYourselfTo (G4VGraphicsScene& scene) const override;
+    virtual void DescribeYourselfTo(G4VGraphicsScene& scene) const override;
+    virtual G4TessellatedSolid* MakeTessellated() const;
 
 protected:
 

@@ -124,7 +124,7 @@ G4ThreeVector G4SignedDistanceField::RayMarch(const G4ThreeVector &p, const G4Th
         totalDist += r;
         p1 = p1+r*d.unit();
         iIter++;
-    } while(r > kCarTolerance && iIter < 1000);
+    } while(r > kCarTolerance && iIter < 500);
 
     if(fabs(Evaluate(p1)) < kCarTolerance)
         return p1;
@@ -217,6 +217,14 @@ void G4SignedDistanceField::DescribeYourselfTo (G4VGraphicsScene& scene) const {
 
     delete vtkSdf;
 }
+
+G4TessellatedSolid* G4SignedDistanceField::MakeTessellated() const {
+    G4VtkSignedDistanceField *vtkSdf = new G4VtkSignedDistanceField(this);
+    auto pd = vtkSdf->CubeMarch();
+
+    G4TessellatedSolid *ts = new G4TessellatedSolid(GetName());
+
+};
 
 
 vtkSmartPointer<vtkPolyData> G4VtkSignedDistanceField::CubeMarch() {

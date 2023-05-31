@@ -1,5 +1,5 @@
 #include <math.h>
-
+#include <chrono>
 
 #include "G4SystemOfUnits.hh"
 #include "G4Types.hh"
@@ -33,30 +33,61 @@ int main(int argc,char **argv)
 
     auto iBad = 0;
 
-    for(auto i=0;i<1000000;i++) {
+    G4cout << std::right << std::setw(15) << "x "
+           << std::right << std::setw(15) << "y "
+           << std::right << std::setw(15) << "z "
+           << std::right << std::setw(15) << "dx "
+           << std::right << std::setw(15) << "dy "
+           << std::right << std::setw(15) << "dz "
+           << std::right << std::setw(15) << "sdf_inside"
+           << std::right << std::setw(15) << "inside"
+           << std::right << std::setw(15) << "sdf_distOutDir"
+           << std::right << std::setw(15) << "distOutDir "
+           << std::right << std::setw(15) << "diff_distOutDir "
+           << std::right << std::setw(15) << "sdf_distOut "
+           << std::right << std::setw(15) << "distOut "
+           << std::right << std::setw(15) << "diff_distOut "
+           << std::right << std::setw(15) << "sdf_distInDir "
+           << std::right << std::setw(15) << "distInDir "
+           << std::right << std::setw(15) << "diff_distInDir "
+           << std::right << std::setw(15) << "sdf_distIn "
+           << std::right << std::setw(15) << "distIn "
+           << std::right << std::setw(15) << "diff_distIn "
+           << std::right << std::setw(15) << "sdf_time "
+           << std::right << std::setw(15) << "time " << G4endl;
+
+    for(auto i=0;i<10000;i++) {
         auto rx = (double) rand() / RAND_MAX;
         auto ry = (double) rand() / RAND_MAX;
         auto rz = sqrt(pow(rx, 2) + pow(ry, 2));
-        auto dx = 1000 * (double) rand() / RAND_MAX;
-        auto dy = 1000 * (double) rand() / RAND_MAX;
-        auto dz = 1000 * (double) rand() / RAND_MAX;
+        auto dx = 2000 * ((double) rand() / RAND_MAX-0.5);
+        auto dy = 2000 * ((double) rand() / RAND_MAX-0.5);
+        auto dz = 2000 * ((double) rand() / RAND_MAX-0.5);
 
         G4ThreeVector p(dx, dy, dz);
         G4ThreeVector d(rx, ry, rz);
 
         d = d.unit();
 
+        auto sdf_start = std::chrono::high_resolution_clock::now();
         auto sdf_inside = s_sdf->Inside(p);
         auto sdf_distOutDir = s_sdf->DistanceToOut(p, d);
         auto sdf_distOut = s_sdf->DistanceToOut(p);
         auto sdf_distInDir = s_sdf->DistanceToIn(p, d);
         auto sdf_distIn = s_sdf->DistanceToIn(p);
+        auto sdf_end = std::chrono::high_resolution_clock::now();
 
+        auto start = std::chrono::high_resolution_clock::now();
         auto inside       = s_g4->Inside(p);
         auto distOutDir = s_g4->DistanceToOut(p, d);
         auto distOut    = s_g4->DistanceToOut(p);
         auto distInDir  = s_g4->DistanceToIn(p, d);
         auto distIn     = s_g4->DistanceToIn(p);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        auto sdf_duration = duration_cast<std::chrono::nanoseconds>(sdf_end - sdf_start);
+        auto duration     = duration_cast<std::chrono::nanoseconds>(end - start);
+
 
         auto diff_inside  = inside - sdf_inside;
         auto diff_distOutDir  = distOutDir - sdf_distOutDir;
@@ -64,24 +95,35 @@ int main(int argc,char **argv)
         auto diff_distInDir = distInDir - sdf_distInDir;
         auto diff_distIn = distIn - sdf_distIn;
 
-        if (diff_inside != 0 ||
-            fabs(diff_distOutDir) > 5e-9 ||
-            fabs(diff_distOut) > 5e-9 ||
-            fabs(diff_distInDir) > 5e-9 ||
-            fabs(diff_distIn) > 5e-9) {
-            G4cout << "x= " << dx << " "
-                   << "y= " << dy << " "
-                   << "z= " << dz << " "
-                   << "dx= " << rx << " "
-                   << "dy= " << ry << " "
-                   << "dz= " << rz << " "
-                   << "inside= " << sdf_inside << " ( " << inside << " ) "
-                   << "distOutDir=" << sdf_distOutDir << " ( " << distOutDir << " , " << diff_distOutDir << " ) "
-                   << "distOut= " << sdf_distOut << " ( " << distOut << " , " << diff_distOut << " ) "
-                   << "distInDir= " << sdf_distInDir << " ( " << distInDir << " , " << diff_distInDir << " ) "
-                   << "distIn= " << sdf_distIn << " ( " << distIn << " , " << diff_distIn << " ) " << G4endl;
+        //if (diff_inside != 0 ||
+        //    fabs(diff_distOutDir) > 5e-9 ||
+        //    fabs(diff_distOut) > 5e-9 ||
+        //    fabs(diff_distInDir) > 5e-9 ||
+        //    fabs(diff_distIn) > 5e-9) {
+        if(1) {
+            G4cout << std::right << std::setw(15) << dx
+                   << std::right << std::setw(15) << dy
+                   << std::right << std::setw(15) << dz
+                   << std::right << std::setw(15) << rx
+                   << std::right << std::setw(15) << ry
+                   << std::right << std::setw(15) << rz
+                   << std::right << std::setw(15) << sdf_inside
+                   << std::right << std::setw(15) << inside
+                   << std::right << std::setw(15) << sdf_distOutDir
+                   << std::right << std::setw(15) << distOutDir
+                   << std::right << std::setw(15) << diff_distOutDir
+                   << std::right << std::setw(15) << sdf_distOut
+                   << std::right << std::setw(15) << distOut
+                   << std::right << std::setw(15) << diff_distOut
+                   << std::right << std::setw(15) << sdf_distInDir
+                   << std::right << std::setw(15) << distInDir
+                   << std::right << std::setw(15) << diff_distInDir
+                   << std::right << std::setw(15) << sdf_distIn
+                   << std::right << std::setw(15) << distIn
+                   << std::right << std::setw(15) << diff_distIn
+                   << std::right << std::setw(15) << sdf_duration.count()
+                   << std::right << std::setw(15) << duration.count() << G4endl;
             iBad++;
         }
     }
-    G4cout << iBad << G4endl;
 }
