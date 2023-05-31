@@ -88,7 +88,6 @@ int main(int argc,char **argv)
         auto sdf_duration = duration_cast<std::chrono::nanoseconds>(sdf_end - sdf_start);
         auto duration     = duration_cast<std::chrono::nanoseconds>(end - start);
 
-
         auto diff_inside  = inside - sdf_inside;
         auto diff_distOutDir  = distOutDir - sdf_distOutDir;
         auto diff_distOut = distOut - sdf_distOut;
