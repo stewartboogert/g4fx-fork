@@ -18,7 +18,7 @@ jobs:
           name: checkgcc
       - checkout
       - run:
-          command: mkdir .build && cd .build && env  cmake .. && make -j4 VERBOSE=1
+          command: mkdir .build && cd .build && env  cmake .. && make -j4
           name: build
 
 workflows:
