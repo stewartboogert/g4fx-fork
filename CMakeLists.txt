@@ -56,29 +56,37 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 
 add_library(core ${sources} ${headers})
+target_compile_options(core PRIVATE -Werror )
 target_link_libraries(core ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(load_gdml load_gdml.cc )
+target_compile_options(load_gdml PRIVATE -Werror  )
 target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 add_executable(tess_test tess_test.cc )
- target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
+target_compile_options(tess_test PRIVATE -Werror  )
+target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 add_executable(vol_mesh_test vol_mesh_test.cc )
+target_compile_options(vol_mesh_test PRIVATE -Werror  )
 target_link_libraries(vol_mesh_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 add_executable(raymarch_test raymarch_test.cc )
+target_compile_options(raymarch_test PRIVATE -Werror  )
 target_link_libraries(raymarch_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 add_executable(dicom_test dicom_test.cc )
+target_compile_options(dicom_test PRIVATE -Werror  )
 target_link_libraries(dicom_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 add_executable(tracking_test tracking_test.cc )
+target_compile_options(dicom_test PRIVATE -Werror  )
 target_link_libraries(tracking_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 add_executable(bsp_test bsp_test.cc ${sources} ${headers})
+target_compile_options(bsp_test PRIVATE -Werror  )
 target_link_libraries(bsp_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 #----------------------------------------------------------------------------
