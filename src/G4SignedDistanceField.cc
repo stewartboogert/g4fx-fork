@@ -223,8 +223,8 @@ G4TessellatedSolid* G4SignedDistanceField::MakeTessellated() const {
     auto pd = vtkSdf->CubeMarch();
 
     G4TessellatedSolid *ts = new G4TessellatedSolid(GetName());
-
-};
+    return ts;
+}
 
 
 vtkSmartPointer<vtkPolyData> G4VtkSignedDistanceField::CubeMarch() {

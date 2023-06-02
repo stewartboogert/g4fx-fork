@@ -85,8 +85,8 @@ int main(int argc,char **argv)
         auto distIn     = s_g4->DistanceToIn(p);
         auto end = std::chrono::high_resolution_clock::now();
 
-        auto sdf_duration = duration_cast<std::chrono::nanoseconds>(sdf_end - sdf_start);
-        auto duration     = duration_cast<std::chrono::nanoseconds>(end - start);
+        auto sdf_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(sdf_end - sdf_start);
+        auto duration     = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
 
 
         auto diff_inside  = inside - sdf_inside;
