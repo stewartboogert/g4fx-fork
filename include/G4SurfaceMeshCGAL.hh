@@ -9,7 +9,6 @@ class G4Polyhedron;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
-#pragma GCC diagnostic ignored "-Wgnu-statement-expression"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 #include "CGAL/Exact_predicates_exact_constructions_kernel.h"
