@@ -21,15 +21,22 @@ endif()
 
 #----------------------------------------------------------------------------
 # Add external 3rd party libraries
-# 
-ExternalProject_Add(tbb URL 
-  ${PROJECT_SOURCE_DIR}/3rdparty/oneTBB-2021.9.0.tar.gz
+#
+
+ExternalProject_Add(catch2
+  URL ${PROJECT_SOURCE_DIR}/3rdparty/Catch2-3.3.2.tar.gz
+  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/catch2
+  CMAKE_ARGS  -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/3rdparty
+  BUILD_COMMAND make install -j2)
+
+ExternalProject_Add(tbb
+  URL ${PROJECT_SOURCE_DIR}/3rdparty/oneTBB-2021.9.0.tar.gz
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/tbb
   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/3rdparty
   BUILD_COMMAND make install -j2)
 
-ExternalProject_Add(embree URL 
-  ${PROJECT_SOURCE_DIR}/3rdparty/embree-4.0.1.tar.gz
+ExternalProject_Add(embree
+  URL ${PROJECT_SOURCE_DIR}/3rdparty/embree-4.0.1.tar.gz
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/embree
   CMAKE_ARGS -DTBB_DIR=${CMAKE_INSTALL_PREFIX}/3rdparty/tbb -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/3rdparty
   BUILD_COMMAND make install -j2
@@ -71,7 +78,7 @@ target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} 
 
 add_executable(vol_mesh_test vol_mesh_test.cc )
 target_compile_options(vol_mesh_test PRIVATE -Werror  )
-target_link_libraries(vol_mesh_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
+target_link_libraries(vol_mesh_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core )
 
 add_executable(raymarch_test raymarch_test.cc )
 target_compile_options(raymarch_test PRIVATE -Werror  )
