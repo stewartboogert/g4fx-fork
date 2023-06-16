@@ -8,18 +8,19 @@ jobs:
       - image: dboogert/g4v11.1.1
         auth:
           username: mydockerhub-user  # can specify string literal values
-          password: $DOCKERHUB_PASSWORD  # or project environment variable reference      
+          password: $DOCKERHUB_PASSWORD  # or project environment variable reference
+    resource_class: large
     steps:
-      - run:
-          command: echo "$SHELL"
-          name: checkshell
-      - run:
-          command: g++ --version
-          name: checkgcc
       - checkout
       - run:
-          command: mkdir .build && cd .build && env  cmake .. && make -j4
+          command: mkdir .3rdparty-build && cd .3rdparty-build && cmake ../3rdparty -DCMAKE_INSTALL_PREFIX:PATH=$PWD/../.install && make && cd ..
+          name: install 3rd party
+      - run:
+          command: mkdir .build && cd .build && cmake .. -DCMAKE_PREFIX_PATH=$PWD/../.install -DCMAKE_INSTALL_PREFIX:PATH=$PWD/../.install && make -j4 install && cd ..
           name: build
+      - run:
+          command: ./.install/bin/EmbreeTests --durations 1
+          name: run tests
 
 workflows:
   # Name of workflow

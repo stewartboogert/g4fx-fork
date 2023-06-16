@@ -21,21 +21,8 @@ endif()
 
 #----------------------------------------------------------------------------
 # Add external 3rd party libraries
-# 
-ExternalProject_Add(tbb URL 
-  ${PROJECT_SOURCE_DIR}/3rdparty/oneTBB-2021.9.0.tar.gz
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/tbb
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/3rdparty
-  BUILD_COMMAND make install -j2)
+#
 
-ExternalProject_Add(embree URL 
-  ${PROJECT_SOURCE_DIR}/3rdparty/embree-4.0.1.tar.gz
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/embree
-  CMAKE_ARGS -DTBB_DIR=${CMAKE_INSTALL_PREFIX}/3rdparty/tbb -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/3rdparty
-  BUILD_COMMAND make install -j2
-  )
-
-ADD_DEPENDENCIES(embree tbb)
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 #
@@ -45,6 +32,7 @@ include(${Geant4_USE_FILE})
 # Setup Geant4 include directories and compile definitions
 find_package(CGAL 5 REQUIRED)
 find_package(VTK REQUIRED)
+find_package(Catch2 REQUIRED)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -71,7 +59,7 @@ target_link_libraries(tess_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} 
 
 add_executable(vol_mesh_test vol_mesh_test.cc )
 target_compile_options(vol_mesh_test PRIVATE -Werror  )
-target_link_libraries(vol_mesh_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
+target_link_libraries(vol_mesh_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core )
 
 add_executable(raymarch_test raymarch_test.cc )
 target_compile_options(raymarch_test PRIVATE -Werror  )
@@ -88,6 +76,10 @@ target_link_libraries(tracking_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARI
 add_executable(bsp_test bsp_test.cc ${sources} ${headers})
 target_compile_options(bsp_test PRIVATE -Werror  )
 target_link_libraries(bsp_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
+
+
+add_executable(EmbreeTests src/testEmbree.cpp)
+target_link_libraries(EmbreeTests PRIVATE Catch2::Catch2WithMain)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -115,5 +107,6 @@ add_custom_target(G01 DEPENDS load_gdml)
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS load_gdml DESTINATION bin)
+install(TARGETS load_gdml EmbreeTests DESTINATION bin)
+
 
