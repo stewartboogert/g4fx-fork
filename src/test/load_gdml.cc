@@ -45,9 +45,9 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4TransportationManager.hh"
 
-#include "G01PrimaryGeneratorAction.hh"
-#include "G01DetectorConstruction.hh"
-#include "G01ActionInitialization.hh"
+#include "geant4App/G01PrimaryGeneratorAction.hh"
+#include "geant4App/G01DetectorConstruction.hh"
+#include "geant4App/G01ActionInitialization.hh"
 
 #include "FTFP_BERT.hh"
 

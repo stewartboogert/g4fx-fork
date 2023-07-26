@@ -30,7 +30,7 @@
 //
 //
 
-#include "G01PrimaryGeneratorAction.hh"
+#include "geant4App/G01PrimaryGeneratorAction.hh"
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"

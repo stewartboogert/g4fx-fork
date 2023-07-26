@@ -27,8 +27,8 @@
 /// \file G01ActionInitialization.cc
 /// \brief Implementation of the G01ActionInitialization class
 
-#include "G01ActionInitialization.hh"
-#include "G01PrimaryGeneratorAction.hh"
+#include "geant4App/G01ActionInitialization.hh"
+#include "geant4App/G01PrimaryGeneratorAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
