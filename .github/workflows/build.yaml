@@ -8,12 +8,9 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: build 3rd party
-        run: |
-          mkdir .3rdparty-build && cd .3rdparty-build && cmake ../3rdparty -DCMAKE_INSTALL_PREFIX:PATH=$PWD/../.install && make && cd ..
       - name: build
         run: |
-          mkdir .build && cd .build && cmake .. -DCMAKE_PREFIX_PATH=$PWD/../.install -DCMAKE_INSTALL_PREFIX:PATH=$PWD/../.install && make -j4 install && cd ..
+          mkdir .build && cd .build && cmake .. -DCMAKE_PREFIX_PATH=/3rdparty/.install -DCMAKE_INSTALL_PREFIX:PATH=$PWD/../.install && make -j4 install && cd ..
       - name: test
         run: |
           ./.install/bin/EmbreeTests --durations 1
