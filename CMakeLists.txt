@@ -33,7 +33,9 @@ include(${Geant4_USE_FILE})
 find_package(CGAL 5 REQUIRED)
 find_package(VTK REQUIRED)
 find_package(Catch2 REQUIRED)
-find_package(OPENCASCADE REQUIRED)
+find_package(OPENCASCADE  COMPONENTS FoundationClasses ModelingAlgorithms
+                                     ModelingData DataExchange Visualization
+             REQUIRED)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
