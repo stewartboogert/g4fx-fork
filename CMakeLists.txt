@@ -98,6 +98,9 @@ target_link_libraries(load_step ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} 
 #target_link_libraries(bsp_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 
+add_executable(OCCCADTests ${PROJECT_SOURCE_DIR}/src/test/testOCCCAD.cc)
+target_link_libraries(OCCCADTests PRIVATE Catch2::Catch2WithMain ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} occCAD)
+
 add_executable(EmbreeTests ${PROJECT_SOURCE_DIR}/src/test/testEmbree.cpp)
 target_link_libraries(EmbreeTests PRIVATE Catch2::Catch2WithMain)
 
