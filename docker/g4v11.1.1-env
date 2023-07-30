@@ -40,3 +40,5 @@ ADD 3rdparty/ /3rdparty/
 # build & install projects in /3rdparty to /3rdparty/.install
 RUN mkdir -p /3rdparty/.build && cd /3rdparty/.build && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$PWD/../.install && make -j12
 
+# Move into main occt install
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install occt-misc
