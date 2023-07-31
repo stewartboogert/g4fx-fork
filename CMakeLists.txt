@@ -60,10 +60,10 @@ target_link_libraries(geant4App ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 
 file(GLOB occCADSources ${PROJECT_SOURCE_DIR}/src/occCAD/*.cc)
 file(GLOB occCADHeaders ${PROJECT_SOURCE_DIR}/include/occCAD/*.hh)
-add_library(occCAD SHARED ${occCADSources} ${occCADHeaders})
+add_library(occCAD STATIC ${occCADSources} ${occCADHeaders})
 target_compile_options(occCAD PRIVATE -Werror )
 target_include_directories(occCAD PUBLIC ${OpenCASCADE_INCLUDE_DIR})
-target_link_libraries(occCAD ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} ${OpenCASCADE_DataExchange_LIBRARIES})
+target_link_libraries(occCAD CGAL::CGAL ${OpenCASCADE_DataExchange_LIBRARIES})
 
 #add_library(core ${sources} ${headers})
 #target_compile_options(core PRIVATE -Werror )
@@ -106,7 +106,7 @@ target_link_libraries(load_step ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} 
 
 
 add_executable(OCCCADTests ${PROJECT_SOURCE_DIR}/src/test/testOCCCAD.cc)
-target_link_libraries(OCCCADTests PRIVATE Catch2::Catch2WithMain ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} occCAD)
+target_link_libraries(OCCCADTests PRIVATE Catch2::Catch2WithMain CGAL::CGAL occCAD)
 
 add_executable(EmbreeTests ${PROJECT_SOURCE_DIR}/src/test/testEmbree.cpp)
 target_link_libraries(EmbreeTests PRIVATE Catch2::Catch2WithMain)
@@ -129,7 +129,7 @@ add_custom_target(G01 DEPENDS load_gdml)
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS load_gdml EmbreeTests DESTINATION bin)
+install(TARGETS load_gdml EmbreeTests OCCCADTests occCAD DESTINATION bin)
 
 # copy over test files to install path
-INSTALL(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/testfiles/ DESTINATION ${INSTALL_PATH}/)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/testfiles/ DESTINATION testfiles)
