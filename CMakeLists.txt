@@ -33,19 +33,37 @@ include(${Geant4_USE_FILE})
 find_package(CGAL 5 REQUIRED)
 find_package(VTK REQUIRED)
 find_package(Catch2 REQUIRED)
-
+find_package( OpenCASCADE
+        COMPONENTS
+        ApplicationFramework
+        DataExchange
+        Draw
+        FoundationClasses
+        ModelingAlgorithms
+        ModelingData
+        Visualization
+        )
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
 include_directories(${PROJECT_SOURCE_DIR}/include 
                     ${Geant4_INCLUDE_DIR})
+
+
 file(GLOB geant4AppSources ${PROJECT_SOURCE_DIR}/src/geant4App/*.cc)
 file(GLOB geant4AppHeaders ${PROJECT_SOURCE_DIR}/include/geant4App/*.hh)
-
 add_library(geant4App SHARED ${geant4AppSources} ${geant4AppHeaders})
 target_compile_options(geant4App PRIVATE -Werror )
 target_link_libraries(geant4App ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
+
+
+file(GLOB occCADSources ${PROJECT_SOURCE_DIR}/src/occCAD/*.cc)
+file(GLOB occCADHeaders ${PROJECT_SOURCE_DIR}/include/occCAD/*.hh)
+add_library(occCAD STATIC ${occCADSources} ${occCADHeaders})
+target_compile_options(occCAD PRIVATE -Werror )
+target_include_directories(occCAD PUBLIC ${OpenCASCADE_INCLUDE_DIR})
+target_link_libraries(occCAD CGAL::CGAL ${OpenCASCADE_DataExchange_LIBRARIES})
 
 #add_library(core ${sources} ${headers})
 #target_compile_options(core PRIVATE -Werror )
@@ -56,6 +74,11 @@ target_link_libraries(geant4App ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
 add_executable(load_gdml ${PROJECT_SOURCE_DIR}/src/test/load_gdml.cc )
 target_compile_options(load_gdml PRIVATE -Werror  )
 target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} geant4App)
+
+add_executable(load_step ${PROJECT_SOURCE_DIR}/src/test/load_step.cc )
+target_compile_options(load_step PRIVATE -Werror  )
+target_link_libraries(load_step ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} occCAD)
+
 
 #add_executable(tess_test ${PROJECT_SOURCE_DIR}/src/test/tess_test.cc )
 #target_compile_options(tess_test PRIVATE -Werror  )
@@ -82,6 +105,9 @@ target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} 
 #target_link_libraries(bsp_test ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} core)
 
 
+add_executable(OCCCADTests ${PROJECT_SOURCE_DIR}/src/test/testOCCCAD.cc)
+target_link_libraries(OCCCADTests PRIVATE Catch2::Catch2WithMain CGAL::CGAL occCAD)
+
 add_executable(EmbreeTests ${PROJECT_SOURCE_DIR}/src/test/testEmbree.cpp)
 target_link_libraries(EmbreeTests PRIVATE Catch2::Catch2WithMain)
 
@@ -103,7 +129,7 @@ add_custom_target(G01 DEPENDS load_gdml)
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS load_gdml EmbreeTests DESTINATION bin)
+install(TARGETS load_gdml EmbreeTests OCCCADTests occCAD DESTINATION bin)
 
 # copy over test files to install path
-INSTALL(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/testfiles/ DESTINATION ${INSTALL_PATH}/)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/testfiles/ DESTINATION testfiles)
