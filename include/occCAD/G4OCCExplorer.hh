@@ -1,9 +1,4 @@
-//
-// Created by Boogert, Stewart (-,DL,-) on 27/07/2023.
-//
-
-#ifndef GEANT4FX_G4OCCEXPLORER_HH
-#define GEANT4FX_G4OCCEXPLORER_HH
+#pragma once
 
 #include <XCAFDoc_ShapeTool.hxx>
 
@@ -21,18 +16,17 @@ public:
     //G4OCCExplorer();
     //~G4OCCExplorer();
 
-    static void Dump(Handle(XCAFDoc_ShapeTool) shapeTool);
-    static opencascade::handle<TDataStd_Name> GetNameFromLabel(TDF_Label &label);
-    static opencascade::handle<XCAFDoc_Location> GetLocationFromLabel(TDF_Label &label);
-    static std::string GetEntryFromLabel(TDF_Label &label);
+    static void Dump(opencascade::handle<XCAFDoc_ShapeTool> shapeTool, std::ostream &ostr);
+    static opencascade::handle<TDataStd_Name> GetNameFromLabel(const TDF_Label &label);
+    static opencascade::handle<XCAFDoc_Location> GetLocationFromLabel(const TDF_Label &label);
+    static std::string GetEntryFromLabel(const TDF_Label &label);
 
-    static TDF_Label FindLabelByEntryString(TDF_Label topLabel, std::string entry);
-    static TDF_LabelSequence FindLabelByNameString(TDF_Label topLabel, std::string labelName);
+    static TDF_Label FindLabelByEntryString(const TDF_Label &topLabel, const std::string &entry);
+    static TDF_LabelSequence FindLabelByNameString(const TDF_Label &topLabel, const std::string &labelName);
 
-    static void DumpShape(TopoDS_Shape &shape);
-    static void DumpFace(TopoDS_Face &face);
-    static void DumpWire(TopoDS_Wire &wire);
-    static void DumpEdge(TopoDS_Edge &edge);
+    static void DumpShape(const TopoDS_Shape &shape, std::ostream &ostr);
+    static void DumpFace(const TopoDS_Face &face, std::ostream &ostr);
+    static void DumpWire(const TopoDS_Wire &wire, std::ostream &ostr);
+    static void DumpEdge(const TopoDS_Edge &edge, std::ostream &ostr);
 };
 
-#endif //GEANT4FX_G4OCCEXPLORER_HH

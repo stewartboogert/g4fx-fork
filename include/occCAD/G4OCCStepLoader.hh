@@ -1,9 +1,4 @@
-//
-// Created by Boogert, Stewart (-,DL,-) on 26/07/2023.
-//
-
-#ifndef GEANT4FX_G4OCCSTEPLOADER_HH
-#define GEANT4FX_G4OCCSTEPLOADER_HH
+#pragma once
 
 #include <XCAFApp_Application.hxx>
 #include <TDocStd_Document.hxx>
@@ -11,18 +6,16 @@
 
 class G4OCCStepLoader {
 public:
-    G4OCCStepLoader(std::string file_name);
+    G4OCCStepLoader(const std::string &file_name);
     ~G4OCCStepLoader();
     TDF_Label GetMainLabel();
-    Handle(XCAFDoc_ShapeTool) GetShapeTool();
+    opencascade::handle<XCAFDoc_ShapeTool> GetShapeTool();
 
 
 private:
-    Handle(XCAFApp_Application) app;
-    Handle(TDocStd_Document) doc;
+    opencascade::handle<XCAFApp_Application> app;
+    opencascade::handle<TDocStd_Document> doc;
     TDF_Label mainLabel;
-    Handle(XCAFDoc_ShapeTool) shapeTool;
+    opencascade::handle<XCAFDoc_ShapeTool> shapeTool;
 
 };
-
-#endif //GEANT4FX_G4OCCSTEPLOADER_HH

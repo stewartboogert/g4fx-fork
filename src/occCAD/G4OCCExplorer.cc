@@ -18,30 +18,30 @@
 
 // G4OCCExplorer::~G4OCCExplorer() {}
 
-void G4OCCExplorer::Dump(Handle(XCAFDoc_ShapeTool) shapeTool) {
+void G4OCCExplorer::Dump(opencascade::handle<XCAFDoc_ShapeTool> shapeTool, std::ostream &ostr) {
     /* Free shapes */
 
     /* Dump shape tool */
-    shapeTool->Dump(std::cout);
+    shapeTool->Dump(ostr);
 }
 
-opencascade::handle<TDataStd_Name> G4OCCExplorer::GetNameFromLabel(TDF_Label &label) {
+opencascade::handle<TDataStd_Name> G4OCCExplorer::GetNameFromLabel(const TDF_Label &label) {
     auto nameID = TDataStd_Name::GetID();
-    Handle(TDataStd_Name) name;
+    opencascade::handle<TDataStd_Name> name;
     label.FindAttribute(nameID, name);
     return name;
 }
 
-std::string G4OCCExplorer::GetEntryFromLabel(TDF_Label &label)
+std::string G4OCCExplorer::GetEntryFromLabel(const TDF_Label &label)
 {
     TCollection_AsciiString anEntry;
     TDF_Tool::Entry(label,anEntry);
     return anEntry.ToCString();
 }
 
-opencascade::handle<XCAFDoc_Location> G4OCCExplorer::GetLocationFromLabel(TDF_Label &label) {
+opencascade::handle<XCAFDoc_Location> G4OCCExplorer::GetLocationFromLabel(const TDF_Label &label) {
     auto locationID = XCAFDoc_Location::GetID();
-    Handle(XCAFDoc_Location) location;
+    opencascade::handle<XCAFDoc_Location> location;
     auto b = label.FindAttribute(locationID, location);
     if(b)
         return location;
@@ -49,7 +49,7 @@ opencascade::handle<XCAFDoc_Location> G4OCCExplorer::GetLocationFromLabel(TDF_La
         return nullptr;
 }
 
-TDF_Label G4OCCExplorer::FindLabelByEntryString(TDF_Label topLabel, std::string entry) {
+TDF_Label G4OCCExplorer::FindLabelByEntryString(const TDF_Label &topLabel, const std::string &entry) {
     for (TDF_ChildIterator itall (topLabel,Standard_True); itall.More(); itall.Next()) {
         auto aChild = itall.Value();
         if ( GetEntryFromLabel(aChild) == entry) {
@@ -59,7 +59,7 @@ TDF_Label G4OCCExplorer::FindLabelByEntryString(TDF_Label topLabel, std::string 
     return TDF_Label();
 }
 
-TDF_LabelSequence G4OCCExplorer::FindLabelByNameString(TDF_Label topLabel, std::string name) {
+TDF_LabelSequence G4OCCExplorer::FindLabelByNameString(const TDF_Label &topLabel, const std::string &name) {
 
     TDF_LabelSequence labelSeq;
     for (TDF_ChildIterator itall (topLabel,Standard_True); itall.More(); itall.Next()) {
@@ -71,26 +71,20 @@ TDF_LabelSequence G4OCCExplorer::FindLabelByNameString(TDF_Label topLabel, std::
     return labelSeq;
 }
 
-void G4OCCExplorer::DumpShape(TopoDS_Shape &shape) {
-    std::cout << "DumpShape" << std::endl;
+void G4OCCExplorer::DumpShape(const TopoDS_Shape &shape, std::ostream &ostr) {
+    ostr << "DumpShape" << std::endl;
 
     auto exp = TopExp_Explorer(shape, TopAbs_FACE, TopAbs_VERTEX);
 
     while(exp.More()) {
         auto current = exp.Current();
-
-        //current.DumpJson(std::cout);
-        //std::cout << std::endl;
-
-        DumpFace(TopoDS::Face(current));
-
-        //std::cout << current.ShapeType() << " " << current.Closed() << " " << current.Infinite() << " " << current.Convex() << std::endl;
+        DumpFace(TopoDS::Face(current), ostr);
         exp.Next();
     }
 }
 
-void G4OCCExplorer::DumpFace(TopoDS_Face &face) {
-    std::cout << "DumpFace" << std::endl;
+void G4OCCExplorer::DumpFace(const TopoDS_Face &face, std::ostream &ostr) {
+    ostr << "DumpFace" << std::endl;
 
     auto s = BRep_Tool::Surface(face);
 
@@ -98,19 +92,18 @@ void G4OCCExplorer::DumpFace(TopoDS_Face &face) {
         auto ps = dynamic_cast<Geom_Plane*>(s->This());
         double a,b,c,d;
         ps->Coefficients(a,b,c,d);
-        std::cout << "Face: plane " << a << " " << b << " " << c << " " << d << std::endl;
-
+        ostr << "Face: plane " << a << " " << b << " " << c << " " << d << std::endl;
     }
     else if(s->IsKind("Geom_CylindricalSurface")) {
         auto ps = dynamic_cast<Geom_CylindricalSurface*>(s->This());
         double a1, a2, a3, b1, b2, b3, c1, c2, c3 ,d;
         ps->Coefficients(a1,a2, a3, b1, b2, b3, c1, c2, c3 ,d);
-        std::cout << "Face: cylinder " << a1 << " " << a2 << " " << a3 << " "
-                                       << b1 << " " << b2 << " " << b3 << " "
-                                       << c1 << " " << c2 << " " << c3 << " " << d << std::endl;
+        ostr << "Face: cylinder " << a1 << " " << a2 << " " << a3 << " "
+                                  << b1 << " " << b2 << " " << b3 << " "
+                                  << c1 << " " << c2 << " " << c3 << " " << d << std::endl;
     }
     else {
-        std::cout << "Face: unknown surface" << std::endl;
+        ostr << "Face: unknown surface" << std::endl;
     }
 
     auto exp = TopExp_Explorer(face, TopAbs_WIRE, TopAbs_VERTEX);
@@ -121,58 +114,50 @@ void G4OCCExplorer::DumpFace(TopoDS_Face &face) {
         //current.DumpJson(std::cout);
         //std::cout << std::endl;
 
-        DumpWire(TopoDS::Wire(current));
+        DumpWire(TopoDS::Wire(current), ostr);
         exp.Next();
         nWire++;
     }
 
-    std::cout << "DumpFace " << nWire << std::endl;
-
-
-    //std::cout << "Surface " << s->get_type_name() << " " << s->get_type_descriptor() << std::endl;
-    //s->DumpJson(std::cout);
-    //std::cout << std::endl;
-
+    ostr << "DumpFace " << nWire << std::endl;
 }
 
-void G4OCCExplorer::DumpWire(TopoDS_Wire &wire) {
-    std::cout << "DumpWire" << std::endl;
+void G4OCCExplorer::DumpWire(const TopoDS_Wire &wire, std::ostream &ostr) {
+    ostr << "DumpWire" << std::endl;
     auto exp = TopExp_Explorer(wire, TopAbs_EDGE, TopAbs_VERTEX);
     while(exp.More()) {
         auto current = exp.Current();
-        //current.DumpJson(std::cout);
-        //std::cout << std::endl;
 
-        DumpEdge(TopoDS::Edge(current));
+        DumpEdge(TopoDS::Edge(current), ostr);
         exp.Next();
     }
 }
 
-void G4OCCExplorer::DumpEdge(TopoDS_Edge &edge) {
-    std::cout << "DumpEdge" << std::endl;
+void G4OCCExplorer::DumpEdge(const TopoDS_Edge &edge, std::ostream &ostr) {
+    ostr << "DumpEdge" << std::endl;
     auto exp = TopExp_Explorer(edge, TopAbs_VERTEX, TopAbs_SHAPE);
 
     double start, end;
     auto c = BRep_Tool::Curve(edge,start, end);
-    std::cout << "Edge: curve "  << start << " " << end << std::endl;
+    ostr << "Edge: curve "  << start << " " << end << std::endl;
 
     if (c->IsKind("Geom_Line")) {
-        std::cout << "Edge: line" << std::endl;
+        ostr << "Edge: line" << std::endl;
     }
     else if (c->IsKind("Geom_Circle")) {
-        std::cout << "Edge: circle" << std::endl;
+        ostr << "Edge: circle" << std::endl;
     }
     else if(c->IsKind("Geom_Ellipse")) {
-        std::cout << "Edge: ellipse" << std::endl;
+        ostr << "Edge: ellipse" << std::endl;
     }
     else if(c->IsKind("Geom_Hyperbola")) {
-        std::cout << "Edge: hyperbola" << std::endl;
+        ostr << "Edge: hyperbola" << std::endl;
     }
     else if(c->IsKind("Geom_Parabola")) {
-        std::cout << "Edge: parabola" << std::endl;
+        ostr << "Edge: parabola" << std::endl;
     }
     else {
-        std::cout << "Edge: unknown curve" << std::endl;
+        ostr << "Edge: unknown curve" << std::endl;
     }
 
     while(exp.More()) {
@@ -180,11 +165,8 @@ void G4OCCExplorer::DumpEdge(TopoDS_Edge &edge) {
         auto v = TopoDS::Vertex(current);
 
         auto pnt = BRep_Tool::Pnt(v);
-        std::cout << "Vertex " << pnt.X() << " " << pnt.Y() << " " << pnt.Z() << std::endl;
+        ostr << "Vertex " << pnt.X() << " " << pnt.Y() << " " << pnt.Z() << std::endl;
 
-
-        //current.DumpJson(std::cout);
-        //std::cout << std::endl;
         exp.Next();
     }
 }

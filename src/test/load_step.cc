@@ -8,7 +8,7 @@
 int main() {
     auto step_reader = G4OCCStepLoader("03_Cube_with_fillet.step");
 
-    G4OCCExplorer::Dump(step_reader.GetShapeTool());
+    G4OCCExplorer::Dump(step_reader.GetShapeTool(), std::cout);
 
     TDF_LabelSequence freeShapes;
     step_reader.GetShapeTool()->GetFreeShapes(freeShapes);
@@ -29,7 +29,7 @@ int main() {
 
     auto shape = step_reader.GetShapeTool()->GetShape(entry1);
 
-    G4OCCExplorer::DumpShape(shape);
+    G4OCCExplorer::DumpShape(shape, std::cout);
 
     return 0;
 }

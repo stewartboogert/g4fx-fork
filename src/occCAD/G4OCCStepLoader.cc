@@ -9,7 +9,7 @@
 #include "Message_ProgressRange.hxx"
 #include "XCAFDoc_DocumentTool.hxx"
 
-G4OCCStepLoader::G4OCCStepLoader(std::string file_name) {
+G4OCCStepLoader::G4OCCStepLoader(const std::string &file_name) {
 
     /* Create application */
     app = XCAFApp_Application::GetApplication();
@@ -38,6 +38,6 @@ TDF_Label G4OCCStepLoader::GetMainLabel() {
     return mainLabel;
 }
 
-Handle(XCAFDoc_ShapeTool) G4OCCStepLoader::GetShapeTool() {
+opencascade::handle<XCAFDoc_ShapeTool> G4OCCStepLoader::GetShapeTool() {
     return shapeTool;
 }
