@@ -1,9 +1,4 @@
-//
-// Created by Stewart Boogert on 08/04/2023.
-//
-
-#ifndef G4VTKVOLUMEMESHLOADER_HH
-#define G4VTKVOLUMEMESHLOADER_HH
+#pragma once
 
 #include "G4Types.hh"
 #include "G4String.hh"
@@ -34,5 +29,3 @@ private:
     vtkSmartPointer<vtkPoints> points;
 
 };
-
-#endif //G4VTKVOLUMEMESHLOADER_HH

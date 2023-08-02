@@ -2,8 +2,7 @@
 // Created by Stewart Boogert on 08/04/2023.
 //
 
-#include "G4VtkVolumeMeshLoader.hh"
-#include "G4ios.hh"
+#include "vtk/G4VtkVolumeMeshLoader.hh"
 
 #include "vtkNew.h"
 #include "vtkPoints.h"

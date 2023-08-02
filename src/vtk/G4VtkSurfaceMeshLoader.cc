@@ -2,7 +2,7 @@
 // Created by Stewart Boogert on 24/03/2023.
 //
 
-#include "G4VtkSurfaceMeshLoader.hh"
+#include "vtk/G4VtkSurfaceMeshLoader.hh"
 
 #include "G4Types.hh"
 #include "G4ios.hh"

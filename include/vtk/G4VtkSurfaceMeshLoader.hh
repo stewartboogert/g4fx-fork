@@ -1,9 +1,4 @@
-//
-// Created by Stewart Boogert on 24/03/2023.
-//
-
-#ifndef G4VTKSURFACEMESHLOADER_HH
-#define G4VTKSURFACEMESHLOADER_HH
+#pragma once
 
 #include "G4Types.hh"
 #include "G4String.hh"
@@ -45,5 +40,3 @@ private:
   vtkSmartPointer<vtkPolyData> pd;
   vtkSmartPointer<vtkPoints> points;
 };
-
-#endif //G4VTKSURFACEMESHLOADER_HH

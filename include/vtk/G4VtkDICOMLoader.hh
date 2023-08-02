@@ -1,9 +1,4 @@
-//
-// Created by Stewart Boogert on 10/04/2023.
-//
-
-#ifndef G4VTKDICOMLOADER_HH
-#define G4VTKDICOMLOADER_HH
+#pragma once
 
 #include "vtkSmartPointer.h"
 
@@ -22,5 +17,3 @@ private:
     vtkSmartPointer<vtkImageData> image;
 
 };
-
-#endif //G4VTKDICOMLOADER_HH

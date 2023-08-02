@@ -65,6 +65,14 @@ target_compile_options(occCAD PRIVATE -Werror )
 target_include_directories(occCAD PUBLIC ${OpenCASCADE_INCLUDE_DIR})
 target_link_libraries(occCAD CGAL::CGAL ${OpenCASCADE_DataExchange_LIBRARIES})
 
+
+file(GLOB vtkSources ${PROJECT_SOURCE_DIR}/src/vtk/Vtk*.cc)
+file(GLOB vtkHeaders ${PROJECT_SOURCE_DIR}/include/vtk/Vtk*.hh)
+add_library(vtk STATIC ${vtkSources} ${vtkHeaders})
+target_compile_options(vtk PRIVATE -Werror )
+# target_include_directories(vtk PUBLIC ${VTK_HEADERS})
+target_link_libraries(vtk CGAL::CGAL ${VTK_LIBRARIES})
+
 #add_library(core ${sources} ${headers})
 #target_compile_options(core PRIVATE -Werror )
 #target_link_libraries(core ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES})
@@ -79,6 +87,9 @@ add_executable(load_step ${PROJECT_SOURCE_DIR}/src/test/load_step.cc )
 target_compile_options(load_step PRIVATE -Werror  )
 target_link_libraries(load_step ${Geant4_LIBRARIES} CGAL::CGAL ${VTK_LIBRARIES} occCAD)
 
+add_executable(viewer ${PROJECT_SOURCE_DIR}/src/test/viewer.cc )
+target_compile_options(viewer PRIVATE -Werror  )
+target_link_libraries(viewer vtk CGAL::CGAL ${VTK_LIBRARIES})
 
 #add_executable(tess_test ${PROJECT_SOURCE_DIR}/src/test/tess_test.cc )
 #target_compile_options(tess_test PRIVATE -Werror  )
@@ -129,7 +140,7 @@ add_custom_target(G01 DEPENDS load_gdml)
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS load_gdml EmbreeTests OCCCADTests occCAD DESTINATION bin)
+install(TARGETS load_gdml viewer EmbreeTests OCCCADTests occCAD DESTINATION bin)
 
 # copy over test files to install path
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/testfiles/ DESTINATION testfiles)

@@ -2,7 +2,7 @@
 // Created by Stewart Boogert on 10/04/2023.
 //
 
-#include "G4VtkDICOMLoader.hh"
+#include "vtk/G4VtkDICOMLoader.hh"
 
 #include "vtkNew.h"
 #include "vtkDICOMImageReader.h"
