@@ -4,7 +4,9 @@
 #include <occCAD/G4OCCExplorer.hh>
 
 TEST_CASE( "CAD file loading and exploration", "[occ]" ) {
-    auto step_reader = G4OCCStepLoader("./.install/testfiles/03_Cube_with_fillet.step");
+    const char* g4fxRoot = getenv("G4FX_DATA_ROOT");
+
+    auto step_reader = G4OCCStepLoader(std::string(g4fxRoot) + "/03_Cube_with_fillet.step");
     auto shape_tool = step_reader.GetShapeTool();
     auto entry1 = G4OCCExplorer::FindLabelByEntryString(step_reader.GetMainLabel(),"0:1:1:1");
     auto shape = shape_tool->GetShape(entry1);

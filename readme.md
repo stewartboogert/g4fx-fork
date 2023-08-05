@@ -45,7 +45,8 @@ apt-get install libocct-data-exchange-dev \
 
 
 ```
-export G3FX_ROOT=git clone location
+export G4FX_ROOT=git clone location
+export G4FX_DATA_ROOT=$G4FX_ROOT/testfiles
 ```
 
 * [Building the Docker Container](docker/readme.md)
