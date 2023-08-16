@@ -1,16 +1,23 @@
 #pragma once
 
 #include "vtkNew.h"
+#include "vtkPoints.h"
+#include "vtkCellArray.h"
+#include "vtkPolyData.h"
+#include "vtkPolyDataAlgorithm.h"
+#include "vtkPolyDataMapper.h"
+#include "vtkActor.h"
 
-class vtkActor;
-
-template<typename storageType, typename filterType, typename mapperType>
 struct VtkPipeline {
-    VtkPipeline() {};
-    ~VtkPipeline() {};
+    VtkPipeline();
+    ~VtkPipeline();
 
-    vtkNew<storageType> data;
-    vtkNew<filterType> filter;
-    vtkNew<mapperType> mapper;
+    void buildPipeline();
+
+    vtkNew<vtkPoints> polydataPoints;
+    vtkNew<vtkCellArray> polydataCells;
+    vtkNew<vtkPolyData> polydata;
+    std::vector<vtkSmartPointer<vtkPolyDataAlgorithm>> polyFilters;
+    vtkNew<vtkPolyDataMapper> mapper;
     vtkNew<vtkActor> actor;
 };
