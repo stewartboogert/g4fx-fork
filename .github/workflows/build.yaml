@@ -13,6 +13,8 @@ jobs:
           mkdir .build && cd .build && cmake .. -DCMAKE_PREFIX_PATH=/3rdparty/.install -DCMAKE_INSTALL_PREFIX:PATH=$PWD/../.install && make -j4 install && cd ..
       - name: test
         run: |
+          export G4FX_DATA_ROOT=$PWD/testfiles
+          echo $G4FX_DATA_ROOT
           ./.install/bin/EmbreeTests --durations 1
           ./.install/bin/OCCCADTests --durations 1
       - run: echo "🍏 This job's status is ${{ job.status }}."

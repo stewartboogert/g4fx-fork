@@ -6,8 +6,33 @@ WORKDIR /tmp
 
 RUN apt-get update
 
-RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install build-essential libvtk9-qt-dev libvtk9.1-qt libcgal-dev libgmp-dev libmpfr-dev libboost-all-dev libxerces-c-dev cmake cmake-curses-gui libxmu-dev x11vnc wget git
-                
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install build-essential \
+                libvtk9-qt-dev \
+                libvtk9.1-qt \
+                libcgal-dev \
+                libgmp-dev \
+                libmpfr-dev \
+                libboost-all-dev \
+                libxerces-c-dev \
+                cmake \
+                cmake-curses-gui \
+                libxmu-dev \
+                x11vnc \
+                wget \
+                git \
+                libxi-dev \
+                libglfw3-dev
+
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install libocct-data-exchange-dev \
+                libocct-draw-dev \
+                libocct-foundation-dev \
+                libocct-modeling-algorithms-dev \
+                libocct-modeling-data-dev \
+                libocct-ocaf-dev \
+                libocct-visualization-dev \
+                occt-draw \
+                occt-misc
+
 # CLHEP
 RUN wget https://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.6.0.tgz && \
     tar -xf clhep-2.4.6.0.tgz && rm -rf clhep-2.4.6.0.tgz && \
@@ -22,23 +47,9 @@ RUN git clone https://gitlab.cern.ch/geant4/geant4.git &&\
 #    rm -rfv geant4-build geant4 &&\
     echo 'source /usr/local/bin/geant4.sh' >> ~/.bashrc
 
-# TBB/Embree
-RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install libglfw3-dev
-
-RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install libocct-data-exchange-dev \
-                libocct-draw-dev \
-                libocct-foundation-dev \
-                libocct-modeling-algorithms-dev \
-                libocct-modeling-data-dev \
-                libocct-ocaf-dev \
-                libocct-visualization-dev \
-                occt-draw
 
 # add the 3rdparty directory to the image
 ADD 3rdparty/ /3rdparty/
 
 # build & install projects in /3rdparty to /3rdparty/.install
 RUN mkdir -p /3rdparty/.build && cd /3rdparty/.build && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$PWD/../.install && make -j12
-
-# Move into main occt install
-RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install occt-misc
